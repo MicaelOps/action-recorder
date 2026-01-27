@@ -12,7 +12,7 @@ Data Collected:
 
 How is this useful in admin?
 
-Well, I have multiple tasks that are just too repetitive and some of them can be automated others not. And they are often long (thousands of files), therefore this program is game-changing if it works!
+Well, I have multiple tasks that are just too repetitive and some of them can be automated, while others not. And they are often long (thousands of files requiring processing), therefore this program is game-changing if it works!
 
 Who is this program intended for?
 

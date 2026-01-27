@@ -8,12 +8,12 @@ Actions recorded:
 
 Data Collected:
 - The specific action
-- Cursor position of where it happen
+- Cursor position of where it happens
 
 How is this useful in admin?
 
 Well, I have multiple tasks that are just too repetitive and some of them can be automated others not. And they are often long (thousands of files), therefore this program is game-changing if it works!
 
-Who is this program inteded for?
+Who is this program intended for?
 
 Just me

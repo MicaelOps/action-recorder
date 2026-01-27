@@ -1,2 +1,2 @@
 # action-recorder
-automating my boring admin tasks
+automating my admin tasks

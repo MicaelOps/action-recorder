@@ -8,6 +8,8 @@ int main() {
     Sleep(3000);
     INPUT inputs[4] = {};
 
+    // Executing the Control + V (Pasting) keyboard command
+
     // Ctrl down
     inputs[0].type = INPUT_KEYBOARD;
     inputs[0].ki.wVk = VK_CONTROL;

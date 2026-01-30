@@ -17,7 +17,8 @@ enum class ACTION_TYPE : unsigned short {
     LEFT_MOUSE_CLICK = 1,
     KEYBOARD_CONTROL_COMBO = 2, // CTRL C OR CTRL V
     KEYBOARD_TEXT = 3,
-    PASTE_CLIPBOARD = 4 // PASTING CLIPBOARD WITHOUT CTRL V
+    PASTE_CLIPBOARD = 4, // PASTING CLIPBOARD WITHOUT CTRL V
+    SPECIAL_FUNCTION = 5, // RELATED TO MY JOB <3
 };
 
 struct LOCATION {
@@ -48,7 +49,14 @@ void playScript();
 void analyseScript();
 
 
-void registerHookThread();
+void registerHookThread(HOOKPROC function);
+
+
+size_t currScript = -1;
+
+HHOOK hook;
+DWORD hookWinThreadID = 0;
+bool stop_playing = false;
 
 class ActionsScript {
 
@@ -78,11 +86,15 @@ public:
     }
     void playAllActions() const {
         auto* temp = header.get();
-        while(temp) {
+        while(temp && !stop_playing) {
             temp->val.playAction();
             temp = temp->next.get();
-            Sleep(1000);
+            Sleep(300);
         }
+
+        // Was the script interrupted or finished?
+        if(stop_playing)
+            stop_playing = false;
     }
     void printAllActions() const {
         auto* temp = header.get();
@@ -161,17 +173,48 @@ public:
     }
 };
 
-size_t currScript = -1;
-
 std::vector<ActionsScript> scripts;
-HHOOK hook;
-DWORD hookWinThreadID = 0;
+
+
+LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
+    if (nCode >= 0) {
+
+        auto* info = (MSLLHOOKSTRUCT*)lParam;
+        LOCATION location = {info->pt.x, info->pt.y};
+
+        if (wParam == WM_LBUTTONDOWN) {
+
+            WINDOWS_ACTION windowsAction = {ACTION_TYPE::LEFT_MOUSE_CLICK, location};
+
+            scripts[currScript].addAction(windowsAction);
+            std::cout << "Action: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
+
+        } else if(wParam == WM_RBUTTONDOWN) {
+            WINDOWS_ACTION windowsAction = {ACTION_TYPE::RIGHT_MOUSE_CLICK, location};
+
+            scripts[currScript].addAction(windowsAction);
+            std::cout << "Action: " << scripts[currScript].getNumberOfActions() << " Right click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
+        }
+    }
+    return CallNextHookEx(hook, nCode, wParam, lParam);
+}
+
+// Stop mechanism
+LRESULT CALLBACK StopPlayingProc(int nCode, WPARAM wParam, LPARAM lParam) {
+    if (nCode >= 0) {
+        if(wParam == WM_MBUTTONDOWN) {
+            stop_playing = true;
+            std::cout << "Play interrupted! \n";
+        }
+    }
+    return CallNextHookEx(hook, nCode, wParam, lParam);
+}
+
 
 int main() {
 
-    std::cout << "Welcome to the recorder. ";
+    std::cout << "Welcome to the recorder. \n";
     std::string command;
-
 
     do {
 
@@ -204,7 +247,7 @@ int main() {
             std::cout << "To finish recording type finish. \n";
             currScript = scripts.size();
             scripts.emplace_back(scriptname);
-            std::jthread hookworker(registerHookThread);
+            std::jthread hookworker(registerHookThread, MouseProc);
             hookworker.detach();
         }
 
@@ -215,31 +258,6 @@ int main() {
         PostThreadMessage(hookWinThreadID, WM_QUIT, 0, 0);
 
     return 0;
-}
-
-
-LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
-    if (nCode >= 0) {
-
-        auto* info = (MSLLHOOKSTRUCT*)lParam;
-        LOCATION location = {info->pt.x, info->pt.y};
-
-        if (wParam == WM_LBUTTONDOWN) {
-
-            WINDOWS_ACTION windowsAction = {ACTION_TYPE::LEFT_MOUSE_CLICK, location};
-
-            scripts[currScript].addAction(windowsAction);
-            std::cout << "Action: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
-
-        } else if(wParam == WM_RBUTTONDOWN) {
-            WINDOWS_ACTION windowsAction = {ACTION_TYPE::RIGHT_MOUSE_CLICK, location};
-
-            scripts[currScript].addAction(windowsAction);
-            std::cout << "Action: " << scripts[currScript].getNumberOfActions() << " Right click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
-
-        }
-    }
-    return CallNextHookEx(hook, nCode, wParam, lParam);
 }
 
 
@@ -257,18 +275,18 @@ void analyseScript(ActionsScript& script) {
     std::string command;
 
     do {
-        std::cout << " \n \n \nOrder of Actions: \n";
+        std::cout << "\nOrder of Actions: \n";
         script.printAllActions();
 
-        std::cout << "\n\n\nOptions: \n"
+        std::cout << "\n\nOptions: \n"
                   << "To stop analysis, write stop_analysis' \n"
                   << "Add Left click at pos by writing 'add_leftclick X Y' \n"
                   << "Add Right click at pos by writing 'add_rightclick X Y' \n"
                   << "Add Ctrl letter by writing 'add_ctrl letter' \n"
                   << "Add Keyboard output by writing  'add_kbtext text' \n"
                   << "Remove an action by writing 'remove pos' \n"
-                  << "Swap Actions pos by writing 'swap pos1 pos2' \n";
-
+                  << "Swap Actions pos by writing 'swap pos1 pos2' \n"
+                  << "Move actions by writing 'move pos newpos' \n";
 
         std::getline(std::cin, command);
 
@@ -310,6 +328,9 @@ void analyseScript(ActionsScript& script) {
             int pos = std::stoi(command.substr(7));
             script.removeAction(pos-1);
             std::cout << "Action removed successfully. \n";
+        } else if(command.starts_with("add_specialfunction")) {
+            WINDOWS_ACTION action = {ACTION_TYPE::SPECIAL_FUNCTION, std::monostate()};
+            script.addAction(action);
         } else if(command.starts_with("swap")) {
 
             std::string posString = command.substr(5);
@@ -355,7 +376,8 @@ void playScript() {
     std::cout << "Script found.. Starting in 3 seconds.. \n";
 
     Sleep(3000);
-
+    std::jthread hookworker(registerHookThread, StopPlayingProc);
+    hookworker.detach();
     (*scriptIt).playAllActions();
 
 }
@@ -373,10 +395,10 @@ void analyseScript() {
     analyseScript(*scriptIt);
 }
 
-void registerHookThread() {
+void registerHookThread(HOOKPROC function) {
 
     hookWinThreadID = GetCurrentThreadId();
-    hook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(nullptr), 0);
+    hook = SetWindowsHookEx(WH_MOUSE_LL, function, GetModuleHandle(nullptr), 0);
 
     if(hook == nullptr) {
         std::cout << "Something went wrong , Error: " << GetLastError();
@@ -432,8 +454,10 @@ void WINDOWS_ACTION::printAction() const noexcept{
 
     if(auto* location = std::get_if<LOCATION>(&data))
         std::cout << " Pos (" << location->X << " , " << location->Y <<") \n";
+    else if(auto* text = std::get_if<std::string>(&data))
+        std::cout << " Text: " << *text << " \n";
     else
-        std::cout << " Text: " << get<std::string>(data) << " \n";
+        std::cout << "";
 }
 
 std::string WINDOWS_ACTION::getActionName() const noexcept {
@@ -448,6 +472,8 @@ std::string WINDOWS_ACTION::getActionName() const noexcept {
             return "KEYBOARD TEXT";
         case ACTION_TYPE::PASTE_CLIPBOARD:
             return "PASTE CLIPBOARD";
+        case ACTION_TYPE::SPECIAL_FUNCTION:
+            return "SPECIAL FUNCTION";
     }
     return "unknown action";
 }
@@ -486,10 +512,7 @@ void WINDOWS_ACTION::playAction() const noexcept{
 
         case ACTION_TYPE::KEYBOARD_CONTROL_COMBO: {
 
-            auto text = std::get<std::string>(data);
-
-            char c = text[0]; // 'c' or 'v'
-            WORD vk = (c == 'c') ? 'C' : 'V';
+            WORD vk = VkKeyScan(std::get<std::string>(data)[0]) & 0xFF;
 
             sendKey(VK_CONTROL, false);
             sendKey(vk, false);
@@ -530,6 +553,45 @@ void WINDOWS_ACTION::playAction() const noexcept{
             }
             break;
         }
+        case ACTION_TYPE::SPECIAL_FUNCTION:
+
+            if(!OpenClipboard(nullptr)) {
+                std::cout << "Unable to access clipboard data \n";
+            } else {
+                std::wstring result;
+
+                HANDLE textData = GetClipboardData(CF_UNICODETEXT);
+                if (textData) {
+                    auto* text = static_cast<wchar_t*>(GlobalLock(textData));
+                    if (text) {
+                        std::wstring nrgpdata(text);
+
+                        auto pos  = nrgpdata.find(L"NLPG Ref.No:");
+
+                        if(pos == std::wstring::npos) {
+                            std::cout << "Unable to find NLPG Number \n";
+                        } else {
+                            int size = 0;
+                            pos+= wcslen(L"NLPG Ref.No:");
+
+                            while (pos < nrgpdata.size() && iswspace(nrgpdata[pos])) {
+                                ++pos;
+                            }
+
+                            size_t start = pos;
+                            while (pos < nrgpdata.size() && iswdigit(nrgpdata[pos])) ++pos;
+
+
+                            long long number = std::stoll(nrgpdata.substr(start, pos - start));
+                            std::cout << "Number detected " << number << "\n";
+                        }
+                        GlobalUnlock(textData);
+                    }
+                }
+
+                CloseClipboard();
+            }
+            break;
     }
 
     if (!inputs.empty()) {

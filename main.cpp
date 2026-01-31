@@ -184,10 +184,20 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
         if (wParam == WM_LBUTTONDOWN) {
 
+
+
             WINDOWS_ACTION windowsAction = {ACTION_TYPE::LEFT_MOUSE_CLICK, location};
 
             scripts[currScript].addAction(windowsAction);
-            std::cout << "Action: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
+
+            POINT before, after;
+            GetCursorPos(&before);
+            std::cout << "Point Location Action: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << before.x << ", " << before.y << ")\n";
+            std::cout << "MSLLHOOKSTRUCT Location: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
+
+            SetCursorPos(location.X, location.Y);
+            GetCursorPos(&after);
+            std::cout << "Cursor after SetCursorPos:  (" << after.x << ", " << after.y << ")\n";
 
         } else if(wParam == WM_RBUTTONDOWN) {
             WINDOWS_ACTION windowsAction = {ACTION_TYPE::RIGHT_MOUSE_CLICK, location};
@@ -585,8 +595,8 @@ void WINDOWS_ACTION::playAction() const noexcept{
                             long long number = std::stoll(nrgpdata.substr(start, pos - start));
                             std::cout << "Number detected " << number << "\n";
                         }
-                        GlobalUnlock(textData);
                     }
+                    GlobalUnlock(textData);
                 }
 
                 CloseClipboard();

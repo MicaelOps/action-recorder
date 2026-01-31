@@ -17,3 +17,6 @@ Well, I have multiple tasks that are just too repetitive and some of them can be
 Who is this program intended for?
 
 Just me
+
+
+-> The beautifying process of this code will be left for later (never)

@@ -19,6 +19,9 @@ enum class ACTION_TYPE : unsigned short {
     KEYBOARD_TEXT = 3,
     PASTE_CLIPBOARD = 4, // PASTING CLIPBOARD WITHOUT CTRL V
     SPECIAL_FUNCTION = 5, // RELATED TO MY JOB <3
+    INSERT_VKKEY = 6,
+    WAIT_MILLISECONDS = 7,
+
 };
 
 struct LOCATION {
@@ -27,7 +30,7 @@ struct LOCATION {
 
 struct WINDOWS_ACTION {
     ACTION_TYPE action;
-    std::variant<std::monostate, std::string, LOCATION> data; // Location for mouse clicks, text for keyboard
+    std::variant<std::monostate, std::string, LOCATION, WORD, int> data; // Location for mouse clicks, text for keyboard
 
     [[nodiscard]] std::string getActionName() const noexcept;
     void printAction() const noexcept;
@@ -184,20 +187,11 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
         if (wParam == WM_LBUTTONDOWN) {
 
-
-
             WINDOWS_ACTION windowsAction = {ACTION_TYPE::LEFT_MOUSE_CLICK, location};
 
             scripts[currScript].addAction(windowsAction);
 
-            POINT before, after;
-            GetCursorPos(&before);
-            std::cout << "Point Location Action: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << before.x << ", " << before.y << ")\n";
             std::cout << "MSLLHOOKSTRUCT Location: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
-
-            SetCursorPos(location.X, location.Y);
-            GetCursorPos(&after);
-            std::cout << "Cursor after SetCursorPos:  (" << after.x << ", " << after.y << ")\n";
 
         } else if(wParam == WM_RBUTTONDOWN) {
             WINDOWS_ACTION windowsAction = {ACTION_TYPE::RIGHT_MOUSE_CLICK, location};
@@ -212,7 +206,7 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
 // Stop mechanism
 LRESULT CALLBACK StopPlayingProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode >= 0) {
-        if(wParam == WM_MBUTTONDOWN) {
+        if(wParam == WM_RBUTTONDOWN) {
             stop_playing = true;
             std::cout << "Play interrupted! \n";
         }
@@ -297,7 +291,8 @@ void analyseScript(ActionsScript& script) {
                   << "Add Keyboard output by writing  'add_kbtext text' \n"
                   << "Remove an action by writing 'remove pos' \n"
                   << "Swap Actions pos by writing 'swap pos1 pos2' \n"
-                  << "Move actions by writing 'move pos newpos' \n";
+                  << "Wait seconds by writing 'wait milliseconds' \n"
+                  << "Insert specific VK_KEY by writing 'add_vkkey key_number' \n";
 
         std::getline(std::cin, command);
 
@@ -353,6 +348,23 @@ void analyseScript(ActionsScript& script) {
                 continue;
 
             script.swapAction(pos1, pos2);
+            std::cout << "Action swapped successfully. \n";
+        } else if(command.starts_with("wait")) {
+
+            std::string posString = command.substr(5);
+            int pos1_length = findIntLength(posString);
+            int pos1 = std::stoi(posString.substr(0, pos1_length));
+            WINDOWS_ACTION action = {ACTION_TYPE::WAIT_MILLISECONDS, pos1};
+            script.addAction(action);
+            std::cout << "Action added successfully. \n";
+        } else if(command.starts_with("add_vkkey")) {
+
+            std::string posString = command.substr(10);
+            int pos1_length = findIntLength(posString);
+            WORD pos1 = std::stoi(posString.substr(0, pos1_length));
+            WINDOWS_ACTION action = {ACTION_TYPE::INSERT_VKKEY, pos1};
+            script.addAction(action);
+            std::cout << "Action added successfully. \n";
         }
     } while (command != "stop_analysis");
 }
@@ -485,6 +497,10 @@ std::string WINDOWS_ACTION::getActionName() const noexcept {
             return "PASTE CLIPBOARD";
         case ACTION_TYPE::SPECIAL_FUNCTION:
             return "SPECIAL FUNCTION";
+        case ACTION_TYPE::INSERT_VKKEY:
+            return "INSERT_VKKEY";
+        case ACTION_TYPE::WAIT_MILLISECONDS:
+            return "WAIT_MILLISECONDS";
     }
     return "unknown action";
 }
@@ -542,7 +558,6 @@ void WINDOWS_ACTION::playAction() const noexcept{
 
         case ACTION_TYPE::KEYBOARD_TEXT: {
 
-
             auto text = std::get<std::string>(data);
             // Convert std::string → UTF-16
             int len = MultiByteToWideChar(
@@ -565,7 +580,6 @@ void WINDOWS_ACTION::playAction() const noexcept{
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION:
-
             if(!OpenClipboard(nullptr)) {
                 std::cout << "Unable to access clipboard data \n";
             } else {
@@ -582,7 +596,6 @@ void WINDOWS_ACTION::playAction() const noexcept{
                         if(pos == std::wstring::npos) {
                             std::cout << "Unable to find NLPG Number \n";
                         } else {
-                            int size = 0;
                             pos+= wcslen(L"NLPG Ref.No:");
 
                             while (pos < nrgpdata.size() && iswspace(nrgpdata[pos])) {
@@ -602,6 +615,16 @@ void WINDOWS_ACTION::playAction() const noexcept{
 
                 CloseClipboard();
             }
+            break;
+        case ACTION_TYPE::INSERT_VKKEY: {
+            auto word_key = std::get<WORD>(data);
+            sendKey(word_key, false);
+            sendKey(word_key, true);
+            break;
+        }
+        case ACTION_TYPE::WAIT_MILLISECONDS:
+            auto milliseconds = std::get<int>(data);
+            Sleep(milliseconds);
             break;
     }
 

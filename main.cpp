@@ -21,16 +21,19 @@ enum class ACTION_TYPE : unsigned short {
     SPECIAL_FUNCTION = 5, // RELATED TO MY JOB <3
     INSERT_VKKEY = 6,
     WAIT_MILLISECONDS = 7,
+    DRAG_MOUSE = 8,
+    SPECIAL_FUNCTION2 = 9,
+    SPECIAL_FUNCTION3 = 10,
 
 };
 
 struct LOCATION {
-    LONG X, Y;
+    LONG X =0, Y = 0;
 };
 
 struct WINDOWS_ACTION {
     ACTION_TYPE action;
-    std::variant<std::monostate, std::string, LOCATION, WORD, int> data; // Location for mouse clicks, text for keyboard
+    std::variant<std::monostate, std::string, LOCATION, WORD, int, std::pair<LOCATION, LOCATION>> data; // Location for mouse clicks, text for keyboard
 
     [[nodiscard]] std::string getActionName() const noexcept;
     void printAction() const noexcept;
@@ -174,6 +177,55 @@ public:
 
         std::swap(min_pos_temp->val, max_pos_temp->val);
     }
+
+    void moveAction(int oldpos, int newpos) {
+        if (oldpos == newpos || oldpos < 1 || oldpos > size || newpos < 1 || newpos > size) {
+            std::cout << "Move action denied, invalid positions.\n";
+            return;
+        }
+
+        // Get the action to move
+        auto* temp = header.get();
+        for (int i = 1; i < oldpos; ++i) {
+            temp = temp->next.get();
+        }
+        WINDOWS_ACTION action_to_move = temp->val;
+
+        // Remove it from old position
+        removeAction(oldpos - 1);
+
+        // Insert at new position
+        insertActionAt(action_to_move, newpos - 1);
+    }
+
+    void insertActionAt(WINDOWS_ACTION action, int pos) {
+        auto new_node = std::make_unique<ScriptNode>(ScriptNode{std::move(action), nullptr});
+
+        if (pos == 0) {
+            // Insert at beginning
+            new_node->next = std::move(header);
+            header = std::move(new_node);
+
+            if (!header->next)
+                footer = header.get();
+        } else {
+            // Find node before insertion point
+            auto* temp = header.get();
+            for (int i = 1; i < pos; ++i) {
+                if (!temp) return;
+                temp = temp->next.get();
+            }
+
+            // Insert after temp
+            new_node->next = std::move(temp->next);
+            temp->next = std::move(new_node);
+
+            if (!temp->next->next)
+                footer = temp->next.get();
+        }
+
+        size++;
+    }
 };
 
 std::vector<ActionsScript> scripts;
@@ -279,20 +331,23 @@ constexpr int findIntLength(std::string_view text) {
 void analyseScript(ActionsScript& script) {
     std::string command;
 
+    std::cout << "\n\nOptions: \n"
+              << "To stop analysis, write stop_analysis' \n"
+              << "Add Left click at pos by writing 'add_leftclick X Y' \n"
+              << "Add Right click at pos by writing 'add_rightclick X Y' \n"
+              << "Add Ctrl letter by writing 'add_ctrl letter' \n"
+              << "Add Keyboard output by writing  'add_kbtext text' \n"
+              << "Remove an action by writing 'remove pos' \n"
+              << "Swap Actions pos by writing 'swap pos1 pos2' \n"
+              << "Wait seconds by writing 'wait milliseconds' \n"
+              << "Insert specific VK_KEY by writing 'add_vkkey key_number' \n"
+              << "Move action to pos by writing 'move pos newpos \n"
+              << "Add Drag Option by writing 'add_drag x1 y1 x2 y2' \n";
+
     do {
         std::cout << "\nOrder of Actions: \n";
         script.printAllActions();
 
-        std::cout << "\n\nOptions: \n"
-                  << "To stop analysis, write stop_analysis' \n"
-                  << "Add Left click at pos by writing 'add_leftclick X Y' \n"
-                  << "Add Right click at pos by writing 'add_rightclick X Y' \n"
-                  << "Add Ctrl letter by writing 'add_ctrl letter' \n"
-                  << "Add Keyboard output by writing  'add_kbtext text' \n"
-                  << "Remove an action by writing 'remove pos' \n"
-                  << "Swap Actions pos by writing 'swap pos1 pos2' \n"
-                  << "Wait seconds by writing 'wait milliseconds' \n"
-                  << "Insert specific VK_KEY by writing 'add_vkkey key_number' \n";
 
         std::getline(std::cin, command);
 
@@ -335,7 +390,8 @@ void analyseScript(ActionsScript& script) {
             script.removeAction(pos-1);
             std::cout << "Action removed successfully. \n";
         } else if(command.starts_with("add_specialfunction")) {
-            WINDOWS_ACTION action = {ACTION_TYPE::SPECIAL_FUNCTION, std::monostate()};
+            int id = std::stoi(command.substr(20));
+            WINDOWS_ACTION action = {static_cast<ACTION_TYPE>(id), std::monostate()};
             script.addAction(action);
         } else if(command.starts_with("swap")) {
 
@@ -349,6 +405,18 @@ void analyseScript(ActionsScript& script) {
 
             script.swapAction(pos1, pos2);
             std::cout << "Action swapped successfully. \n";
+        } else if(command.starts_with("move")) {
+
+            std::string posString = command.substr(5);
+            int pos1_length = findIntLength(posString);
+            int pos1 = std::stoi(posString.substr(0, pos1_length));
+            int pos2 = std::stoi(posString.substr(pos1_length + 1));
+
+            if(pos1 == pos2)
+                continue;
+
+            script.moveAction(pos1, pos2);
+            std::cout << "Action moved successfully. \n";
         } else if(command.starts_with("wait")) {
 
             std::string posString = command.substr(5);
@@ -357,6 +425,25 @@ void analyseScript(ActionsScript& script) {
             WINDOWS_ACTION action = {ACTION_TYPE::WAIT_MILLISECONDS, pos1};
             script.addAction(action);
             std::cout << "Action added successfully. \n";
+        } else if(command.starts_with("add_drag")) {
+            std::string posString = command.substr(9);
+            int x1_length = findIntLength(posString);
+            int X1 = std::stoi(posString.substr(0, x1_length));
+
+            posString = posString.substr(x1_length + 1);
+            int y1_length = findIntLength(posString);
+            int Y1 = std::stoi(posString.substr(0, y1_length));
+
+            posString = posString.substr(y1_length + 1);
+            int x2_length = findIntLength(posString);
+            int X2 = std::stoi(posString.substr(0, x2_length));
+
+            int Y2 = std::stoi(posString.substr(x2_length + 1));
+
+            std::pair<LOCATION, LOCATION> locs = {LOCATION{X1, Y1}, LOCATION{X2, Y2}};
+            WINDOWS_ACTION action = {ACTION_TYPE::DRAG_MOUSE, locs};
+            script.addAction(action);
+            std::cout << "Drag action added successfully. \n";
         } else if(command.starts_with("add_vkkey")) {
 
             std::string posString = command.substr(10);
@@ -479,8 +566,12 @@ void WINDOWS_ACTION::printAction() const noexcept{
         std::cout << " Pos (" << location->X << " , " << location->Y <<") \n";
     else if(auto* text = std::get_if<std::string>(&data))
         std::cout << " Text: " << *text << " \n";
+    else if(auto* number = std::get_if<WORD>(&data))
+        std::cout << " Number: " << *number << " \n";
+    else if(auto* intn = std::get_if<int>(&data))
+        std::cout << " Number: " << *intn << " \n";
     else
-        std::cout << "";
+        std::cout << "\n";
 }
 
 std::string WINDOWS_ACTION::getActionName() const noexcept {
@@ -501,6 +592,12 @@ std::string WINDOWS_ACTION::getActionName() const noexcept {
             return "INSERT_VKKEY";
         case ACTION_TYPE::WAIT_MILLISECONDS:
             return "WAIT_MILLISECONDS";
+        case ACTION_TYPE::DRAG_MOUSE:
+            return "DRAG_MOUSE";
+        case ACTION_TYPE::SPECIAL_FUNCTION2:
+            return "SPECIAL_FUNCTION2";
+        case ACTION_TYPE::SPECIAL_FUNCTION3:
+            return "SPECIAL_FUNCTION3";
     }
     return "unknown action";
 }
@@ -622,9 +719,35 @@ void WINDOWS_ACTION::playAction() const noexcept{
             sendKey(word_key, true);
             break;
         }
-        case ACTION_TYPE::WAIT_MILLISECONDS:
+        case ACTION_TYPE::WAIT_MILLISECONDS: {
             auto milliseconds = std::get<int>(data);
             Sleep(milliseconds);
+            break;
+        }
+        case ACTION_TYPE::DRAG_MOUSE: {
+            std::pair<LOCATION, LOCATION> locations = std::get<std::pair<LOCATION, LOCATION>>(data);
+            SetCursorPos(locations.first.X, locations.first.Y);
+            Sleep(50);
+
+            inputs.resize(2);
+            inputs[0].type = INPUT_MOUSE;
+            inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+            SendInput(1, inputs.data(), sizeof(INPUT));
+
+            // Drag to end position
+            Sleep(50);
+            SetCursorPos(locations.second.X, locations.second.Y);
+            Sleep(50);
+
+            // Release
+            inputs[1].type = INPUT_MOUSE;
+            inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            break;
+        }
+        case ACTION_TYPE::SPECIAL_FUNCTION2: {
+            break;
+        }
+        case ACTION_TYPE::SPECIAL_FUNCTION3:
             break;
     }
 

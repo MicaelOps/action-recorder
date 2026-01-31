@@ -225,6 +225,7 @@ int main() {
 
     std::cout << "Welcome to the recorder. \n";
     std::string command;
+    SetProcessDPIAware();
 
     do {
 

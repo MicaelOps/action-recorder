@@ -190,7 +190,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1694, 895}});
 
     // 28. WAIT_MILLISECONDS Number: 2000
-    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 5000});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 7000});
 
     // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,

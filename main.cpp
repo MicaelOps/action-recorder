@@ -5,6 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include "script.h"
 #include "utils.h"
+#include "hardcoded.h"
 
 #include <iostream>
 #include <thread>
@@ -65,6 +66,7 @@ int main() {
 
     do {
 
+        scripts.push_back(registerHard());
         std::cout << "To play a script type play, to start recording a script type record, to edit the record type analyse. \n";
         std::cin >> command;
         std::cin.ignore(1000, '\n');

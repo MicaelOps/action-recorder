@@ -436,6 +436,7 @@ void WINDOWS_ACTION::playAction() const noexcept{
                 int x = locations.first.X + (locations.second.X - locations.first.X) * i / steps;
                 int y = locations.first.Y + (locations.second.Y - locations.first.Y) * i / steps;
                 SetCursorPos(x, y);
+                Sleep(10);  // Small delay between each step
             }
 
             // Hold at final position

@@ -168,6 +168,23 @@ ActionsScript registerHard() {
 
     // 46. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
+
+    // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1694, 895}});
+
+    // 28. WAIT_MILLISECONDS Number: 2000
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 2000});
+
+    // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
+    hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
+                         std::pair<LOCATION, LOCATION>{LOCATION{1907, 185}, LOCATION{1903, 918}}});
+
+    // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{600, 40}});
+
+    // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{937, 920}});
+
     return hardcoded;
 }
 #endif //ACTION_RECORDER_HARDCODED_H

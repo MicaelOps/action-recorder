@@ -417,22 +417,33 @@ void WINDOWS_ACTION::playAction() const noexcept{
         }
         case ACTION_TYPE::DRAG_MOUSE: {
             std::pair<LOCATION, LOCATION> locations = std::get<std::pair<LOCATION, LOCATION>>(data);
+            // Move to start position
             SetCursorPos(locations.first.X, locations.first.Y);
-            Sleep(50);
-
-            inputs.resize(1);
-            inputs[0].type = INPUT_MOUSE;
-            inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-            SendInput(1, inputs.data(), sizeof(INPUT));
-
-            // Drag to end position
             Sleep(100);
-            SetCursorPos(locations.second.X, locations.second.Y);
-            Sleep(2000);
 
-            // Release
-            inputs[0].type = INPUT_MOUSE;
-            inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            // Press mouse button
+            INPUT input{};
+            input.type = INPUT_MOUSE;
+            input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+            SendInput(1, &input, sizeof(INPUT));
+
+            // Wait for the drag to register
+            Sleep(300);
+
+            // Smooth drag with intermediate steps
+            int steps = 20;
+            for (int i = 1; i <= steps; ++i) {
+                int x = locations.first.X + (locations.second.X - locations.first.X) * i / steps;
+                int y = locations.first.Y + (locations.second.Y - locations.first.Y) * i / steps;
+                SetCursorPos(x, y);
+            }
+
+            // Hold at final position
+            Sleep(500);
+
+            // Release mouse button
+            input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            SendInput(1, &input, sizeof(INPUT));
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION2: { // file name

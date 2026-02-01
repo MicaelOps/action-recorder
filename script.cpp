@@ -96,10 +96,15 @@ void ActionsScript::toggleRepeater()  noexcept{
 
 void setClipboardText(const std::wstring& text) {
 
+    if(!OpenClipboard(nullptr)) {
+        std::cout << "Unable to open clipboard  \n";
+        return;
+    }
     size_t size = (text.size()+1)*sizeof(wchar_t);
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, size);
 
     if (!hMem) {
+        std::cout << "Unable to GlobalAlloc \n";
         CloseClipboard();
         return;
     }
@@ -423,7 +428,7 @@ void WINDOWS_ACTION::playAction() const noexcept{
             // Drag to end position
             Sleep(50);
             SetCursorPos(locations.second.X, locations.second.Y);
-            Sleep(400);
+            Sleep(2000);
 
             // Release
             inputs[1].type = INPUT_MOUSE;

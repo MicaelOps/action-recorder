@@ -177,7 +177,7 @@ ActionsScript registerHard() {
 
     // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
-                         std::pair<LOCATION, LOCATION>{LOCATION{1907, 185}, LOCATION{1903, 918}}});
+                         std::pair<LOCATION, LOCATION>{LOCATION{1901, 952}, LOCATION{1901, 952}}});
 
     // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{600, 40}});

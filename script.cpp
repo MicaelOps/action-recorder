@@ -11,7 +11,6 @@
 #include <vector>
 #include <regex>
 #include <sstream>
-#include <iomanip>
 #include <cwctype>
 
 bool stop_playing = false;
@@ -399,8 +398,9 @@ void WINDOWS_ACTION::playAction() const noexcept{
                 while (pos < text.size() && iswdigit(text[pos])) ++pos;
 
 
-                long long number = std::stoll(text.substr(start, pos - start));
-                std::cout << "Number detected " << number << "\n";
+                auto number = text.substr(start, pos - start);
+                setClipboardText(number);
+                std::wcout << L"Number detected " << number << "\n";
                 break;
             }
         }

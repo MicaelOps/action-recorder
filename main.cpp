@@ -101,6 +101,7 @@ int main() {
             }, MouseProc);
 
             hookworker.detach();
+            Sleep(100);
         }
 
     } while(command != "stop");
@@ -289,6 +290,7 @@ void analyseScript() {
     std::string scriptname;
     std::cout << "Input the script name \n";
     std::cin >> scriptname;
+    std::cin.ignore(1000, '\n');
 
     auto scriptIt = std::ranges::find_if(scripts.begin(), scripts.end(), [&](const auto& script) {return script.getName() == scriptname;});
     if(scriptIt == scripts.end()) {

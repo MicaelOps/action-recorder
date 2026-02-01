@@ -10,13 +10,13 @@
 ActionsScript registerHard() {
     ActionsScript hardcoded("final");
 
-    // 1. LEFT MOUSE CLICK Pos (695, 265)
+    // 1. LEFT MOUSE CLICK Pos (695, 265) FILE NAME
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{695, 265}});
 
     // 2. WAIT_MILLISECONDS Number: 400
     hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 400});
 
-    // 3. LEFT MOUSE CLICK Pos (695, 265)
+    // 3. LEFT MOUSE CLICK Pos (695, 265) FILE NAME
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{695, 265}});
 
     // 4. WAIT_MILLISECONDS Number: 400
@@ -25,10 +25,10 @@ ActionsScript registerHard() {
     // 5. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
 
-    // 6. LEFT MOUSE CLICK Pos (1362, 1029)
+    // 6. LEFT MOUSE CLICK Pos (1362, 1029) NOTEPAD TASKBAR ICON
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1362, 1029}});
 
-    // 7. LEFT MOUSE CLICK Pos (1200, 594)
+    // 7. LEFT MOUSE CLICK Pos (1200, 594) NOTEPAD TAB
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1200, 594}});
 
     // 8. SPECIAL_FUNCTION2
@@ -37,19 +37,22 @@ ActionsScript registerHard() {
     // 9. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
-    // 10. LEFT MOUSE CLICK Pos (973, 333)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{973, 333}});
+    // 10. LEFT MOUSE CLICK Pos (973, 333) ADDRESS LINE
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1016, 148}});
 
-    // 11. LEFT MOUSE CLICK Pos (973, 333)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{973, 333}});
+    // 11. LEFT MOUSE CLICK Pos (973, 333) ADDRESS LINE
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1016, 148}});
 
-    // 12. LEFT MOUSE CLICK Pos (973, 333)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{973, 333}});
+    // 12. LEFT MOUSE CLICK Pos (973, 333) ADDRESS LINE
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1016, 148}});
 
     // 13. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
 
-    // 14. LEFT MOUSE CLICK Pos (1297, 51)
+    // 14. LEFT MOUSE CLICK Pos (1297, 51) BROWSER TASKBAR
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1023, 1043}});
+
+    // 14. LEFT MOUSE CLICK Pos (1297, 51) S
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1297, 51}});
 
     // 15. LEFT MOUSE CLICK Pos (1723, 155)
@@ -76,14 +79,11 @@ ActionsScript registerHard() {
     // 22. SPECIAL FUNCTION
     hardcoded.addAction({ACTION_TYPE::SPECIAL_FUNCTION, std::monostate()});
 
-    // 23. LEFT MOUSE CLICK Pos (1485, 51)
+    // 23. LEFT MOUSE CLICK Pos (1485, 51) IDOX TAB
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});
 
     // 24. LEFT MOUSE CLICK Pos (1769, 575)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1769, 575}});
-
-    // 25. KEYBOARD CTRL + LETTER Text: 5
-    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("5")});
 
     // 26. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
@@ -95,25 +95,29 @@ ActionsScript registerHard() {
     // 28. WAIT_MILLISECONDS Number: 2000
     hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 2000});
 
-    // 29. LEFT MOUSE CLICK Pos (1362, 1029)
+    // 29. LEFT MOUSE CLICK Pos (1362, 1029) NOTEPAD TASKBAR WINDOW
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1362, 1029}});
 
     // 30. LEFT MOUSE CLICK Pos (1200, 594)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1200, 594}});
 
-    // 31. LEFT MOUSE CLICK Pos (871, 352)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{871, 352}});
+    // 31. LEFT MOUSE CLICK Pos (871, 352) DATE LINE
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{990, 177}});
 
-    // 32. LEFT MOUSE CLICK Pos (871, 352)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{871, 352}});
+    // 32. LEFT MOUSE CLICK Pos (871, 352) DATE LINE
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{990, 177}});
 
-    // 33. LEFT MOUSE CLICK Pos (871, 352)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{871, 352}});
+    // 33. LEFT MOUSE CLICK Pos (871, 352) DATE LINE
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{990, 177}});
 
     // 34. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
 
-    // 35. LEFT MOUSE CLICK Pos (1485, 51)
+
+    // 14. LEFT MOUSE CLICK Pos (1297, 51) BROWSER TASKBAR
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1023, 1043}});
+
+    // 35. LEFT MOUSE CLICK Pos (1485, 51) IDOX TAB?
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});
 
     // 36. LEFT MOUSE CLICK Pos (1781, 811)
@@ -128,17 +132,21 @@ ActionsScript registerHard() {
     // 39. LEFT MOUSE CLICK Pos (1200, 594)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1200, 594}});
 
-    // 40. LEFT MOUSE CLICK Pos (872, 376)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{872, 376}});
+    // 40. LEFT MOUSE CLICK Pos (872, 376) CODE LINE
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{996, 195}});
 
     // 41. LEFT MOUSE CLICK Pos (872, 376)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{872, 376}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{996, 195}});
 
     // 42. LEFT MOUSE CLICK Pos (872, 376)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{872, 376}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{996, 195}});
 
     // 43. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+
+
+    // 14. LEFT MOUSE CLICK Pos (1297, 51) BROWSER TASKBAR
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1023, 1043}});
 
     // 44. LEFT MOUSE CLICK Pos (1485, 51)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});

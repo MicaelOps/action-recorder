@@ -420,19 +420,19 @@ void WINDOWS_ACTION::playAction() const noexcept{
             SetCursorPos(locations.first.X, locations.first.Y);
             Sleep(50);
 
-            inputs.resize(2);
+            inputs.resize(1);
             inputs[0].type = INPUT_MOUSE;
             inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
             SendInput(1, inputs.data(), sizeof(INPUT));
 
             // Drag to end position
-            Sleep(50);
+            Sleep(100);
             SetCursorPos(locations.second.X, locations.second.Y);
             Sleep(2000);
 
             // Release
-            inputs[1].type = INPUT_MOUSE;
-            inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            inputs[0].type = INPUT_MOUSE;
+            inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTUP;
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION2: { // file name

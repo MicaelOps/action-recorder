@@ -63,10 +63,10 @@ int main() {
     std::cout << "Welcome to the recorder. \n";
     std::string command;
     SetProcessDPIAware();
+    scripts.push_back(registerHard());
 
     do {
 
-        scripts.push_back(registerHard());
         std::cout << "To play a script type play, to start recording a script type record, to edit the record type analyse. \n";
         std::cin >> command;
         std::cin.ignore(1000, '\n');
@@ -140,7 +140,8 @@ void analyseScript(ActionsScript& script) {
               << "Wait seconds by writing 'wait milliseconds' \n"
               << "Insert specific VK_KEY by writing 'add_vkkey key_number' \n"
               << "Move action to pos by writing 'move pos newpos \n"
-              << "Add Drag Option by writing 'add_drag x1 y1 x2 y2' \n";
+              << "Add Drag Option by writing 'add_drag x1 y1 x2 y2' \n"
+              << "Add repeat script by writing 'repeat number' \n";
 
     do {
 
@@ -182,7 +183,11 @@ void analyseScript(ActionsScript& script) {
             WINDOWS_ACTION action = {ACTION_TYPE::KEYBOARD_TEXT, command.substr(11)};
             script.addAction(action);
             std::cout << "Action added successfully. \n";
-
+        } else if(command.starts_with("repeat")) {
+            int pos = std::stoi(command.substr(7));
+            WINDOWS_ACTION action = {ACTION_TYPE::REPEAT_SCRIPT, std::make_pair(&script, pos)};
+            script.addAction(action);
+            std::cout << "Action added successfully. \n";
         } else if(command.starts_with("remove")) {
             int pos = std::stoi(command.substr(7));
             script.removeAction(pos-1);

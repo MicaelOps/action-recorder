@@ -42,19 +42,22 @@ void ActionsScript::addAction(WINDOWS_ACTION action) {
         footer = raw;
     }
 }
-void ActionsScript::playAllActions(bool b) const {
+void ActionsScript::playAllActions(bool repeater) const {
     auto* temp = header.get();
     DWORD local_threadID;
 
 
-    std::jthread hookworker([&](HOOKPROC func) {
-        registerHookThread(hooka, local_threadID, func);
-    }, StopPlayingProc);
+    if (!isRepeating()){
+        std::jthread hookworker([&](HOOKPROC func) {
+            registerHookThread(hooka, local_threadID, func);
+        }, StopPlayingProc);
 
-    hookworker.detach();
+        hookworker.detach();
+    }
 
     while(temp && !stop_playing) {
-        temp->val.playAction(false);
+        std::cout << "aaeee";
+        temp->val.playAction(repeater);
         temp = temp->next.get();
         Sleep(300);
     }
@@ -527,9 +530,12 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             auto repeatinfo = std::get<std::pair<ActionsScript*, int>>(data);
 
             if(!repeaterCall) {
+                std::cout << "first time repeater ";
+                repeatinfo.first->toggleRepeater();
                 for(int i = 0; i < repeatinfo.second; ++i) {
                     repeatinfo.first->playAllActions(true);
                 }
+                repeatinfo.first->toggleRepeater();
             }
             break;
     }

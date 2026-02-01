@@ -458,7 +458,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             // CODE KEYWORDS - Add/remove keywords here
             // ========================================
             std::vector<std::wstring> code_keywords = {
-                    L"HD", L"SD", L"MW", L"DEICR", L"BATTERY", L"BAT", L"HO",
+                    L"HD", L"SD", L"MW", L"DEICR", L"LAS", L"BATTERY", L"BAT", L"HO",
                     L"Handover", L"Boiler", L"Form", L"IMS", L"Rads", L"CB"
                     // Add more keywords as needed
             };

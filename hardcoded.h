@@ -95,6 +95,10 @@ ActionsScript registerHard() {
     // 23. LEFT MOUSE CLICK Pos (1485, 51) IDOX TAB
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});
 
+    // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
+    hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
+                         std::pair<LOCATION, LOCATION>{LOCATION{1901, 952}, LOCATION{1901, 952}}});
+
     // 24. LEFT MOUSE CLICK Pos (1769, 575)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1769, 575}});
 
@@ -194,12 +198,6 @@ ActionsScript registerHard() {
     // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1694, 895}});
 
-    // 28. WAIT_MILLISECONDS Number: 2000
-    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 6250});
-
-    // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
-    hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
-                         std::pair<LOCATION, LOCATION>{LOCATION{1901, 952}, LOCATION{1901, 952}}});
 
     // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{600, 40}});

@@ -403,10 +403,6 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
 
                 auto number = text.substr(start, pos - start);
 
-                if(number.starts_with(L"1")) {
-                    number.insert(number.begin(), L'0');
-                }
-
                 setClipboardText(number);
                 std::wcout << L"Number detected " << number << "\n";
                 break;

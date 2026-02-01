@@ -71,6 +71,7 @@ ActionsScript registerHard() {
     // 17. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
+
     // 18. LEFT MOUSE CLICK Pos (1403, 182)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1403, 182}});
 
@@ -97,6 +98,10 @@ ActionsScript registerHard() {
 
     // 26. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
+
+    // readjust
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1327, 988}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1327, 988}});
 
     // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
@@ -139,6 +144,10 @@ ActionsScript registerHard() {
     // 37. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
+    // readjust
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1327, 988}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1327, 988}});
+
     // 38. LEFT MOUSE CLICK Pos (1362, 1029)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1362, 1029}});
 
@@ -172,6 +181,10 @@ ActionsScript registerHard() {
 
     // 46. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
+
+    // readjust
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1327, 988}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1327, 988}});
 
     // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1694, 895}});

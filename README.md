@@ -3,8 +3,14 @@ Automating my admin tasks by recording actions. (Just Like Excel!)
 
 Actions recorded:
 - Mouse clicks (Left and right)
+
+Actions that can be added:
 - Copy (Control + C)
 - Paste (Control + V)
+- Repeat Script n times
+- Wait milliseconds
+- Drag loc to loc
+- Enter keyboard text
 
 Data Collected:
 - The specific action
@@ -20,3 +26,4 @@ Just me
 
 
 -> The beautifying process of this code will be left for later (never)
+-> I've broken so many programming principles just because i want to get this program done quickly.

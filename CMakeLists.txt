@@ -18,4 +18,8 @@ if (MSVC)
     endforeach()
 endif()
 
-add_executable(action-recorder main.cpp)
+add_executable(action-recorder main.cpp
+        script.h
+        utils.cpp
+        utils.cpp
+        script.cpp)

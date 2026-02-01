@@ -38,7 +38,8 @@ struct WINDOWS_ACTION {
 
     [[nodiscard]] std::string getActionName() const noexcept;
     void printAction() const noexcept;
-    void playAction() const noexcept;
+
+    void playAction(bool repeaterCall) const noexcept;
 };
 
 
@@ -67,7 +68,7 @@ public:
 
     void addAction(WINDOWS_ACTION action);
 
-    void playAllActions() const;
+    void playAllActions(bool repeaterCall) const;
     void printAllActions() const;
 
     void toggleRepeater()  noexcept;

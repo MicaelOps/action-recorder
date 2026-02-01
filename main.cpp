@@ -284,7 +284,7 @@ void playScript() {
     std::cout << "Script found.. Starting in 3 seconds.. \n";
 
     Sleep(3000);
-    (*scriptIt).playAllActions();
+    (*scriptIt).playAllActions(false);
 
 }
 

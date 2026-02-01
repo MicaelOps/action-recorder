@@ -71,7 +71,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1403, 182}});
 
     // 19. WAIT_MILLISECONDS Number: 2400
-    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 2400});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 4400});
 
     // 20. KEYBOARD CTRL + LETTER Text: a
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});

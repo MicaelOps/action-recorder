@@ -42,7 +42,7 @@ void ActionsScript::addAction(WINDOWS_ACTION action) {
         footer = raw;
     }
 }
-void ActionsScript::playAllActions() const {
+void ActionsScript::playAllActions(bool b) const {
     auto* temp = header.get();
     DWORD local_threadID;
 
@@ -54,7 +54,7 @@ void ActionsScript::playAllActions() const {
     hookworker.detach();
 
     while(temp && !stop_playing) {
-        temp->val.playAction();
+        temp->val.playAction(false);
         temp = temp->next.get();
         Sleep(300);
     }
@@ -306,7 +306,7 @@ std::string WINDOWS_ACTION::getActionName() const noexcept {
     return "unknown action";
 }
 
-void WINDOWS_ACTION::playAction() const noexcept{
+void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
     std::vector<INPUT> inputs;
     switch(action) {
         case ACTION_TYPE::LEFT_MOUSE_CLICK: {
@@ -526,15 +526,11 @@ void WINDOWS_ACTION::playAction() const noexcept{
 
             auto repeatinfo = std::get<std::pair<ActionsScript*, int>>(data);
 
-            if(repeatinfo.first->isRepeating())
-                return;
-
-            repeatinfo.first->toggleRepeater(); // turn it on
-
-            for(int i = 0; i < repeatinfo.second; ++i) {
-                repeatinfo.first->playAllActions();
+            if(!repeaterCall) {
+                for(int i = 0; i < repeatinfo.second; ++i) {
+                    repeatinfo.first->playAllActions(true);
+                }
             }
-            repeatinfo.first->toggleRepeater(); // turn it off
             break;
     }
 

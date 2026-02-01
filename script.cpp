@@ -463,7 +463,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             // CODE KEYWORDS - Add/remove keywords here
             // ========================================
             std::vector<std::wstring> code_keywords = {
-                    L"HD", L"SD", L"MW", L"FIREDOOR", L"FIRE", L"Full Htg" , L"Full H" , L" Full", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
+                    L"HD", L"SD", L"MW", L"FIREDOOR", L"FIRE", L"ct", L" Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
                     L"Handover", L"Boiler", L"Form", L"IMS", L"CB", L"CB5", L"CB4", L"CB3", L"HWT", L"EIC", L"Asbestos", L"DA KIT", L"LAS HO", L"TEST", L"TEST ONLY"
                     // Add more keywords as needed
             };
@@ -528,6 +528,12 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                 if (code_start_index < words.size()) {
                     break; // Found the start of code section
                 }
+            }
+
+            // LIMIT: Address can be maximum 3 words
+            // If no keyword found or keyword is after word 3, split at word 3
+            if (code_start_index > 3) {
+                code_start_index = 3;
             }
 
             // Build street address (words before code section)

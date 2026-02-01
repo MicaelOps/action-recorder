@@ -78,6 +78,11 @@ ActionsScript registerHard() {
     // 19. WAIT_MILLISECONDS Number: 2400
     hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 4400});
 
+    // fk hihg
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1472, 690}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1472, 670}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1472, 710}});
+
     // 20. KEYBOARD CTRL + LETTER Text: a
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
 
@@ -190,7 +195,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1694, 895}});
 
     // 28. WAIT_MILLISECONDS Number: 2000
-    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 7000});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 6250});
 
     // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,

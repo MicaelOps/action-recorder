@@ -55,13 +55,16 @@ ActionsScript registerHard() {
     // 14. LEFT MOUSE CLICK Pos (1297, 51) BROWSER TASKBAR
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1023, 1043}});
 
-    // 14. LEFT MOUSE CLICK Pos (1297, 51) S
+    // 14. LEFT MOUSE CLICK Pos (1297, 51) tab mri
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1297, 51}});
 
-    // 15. LEFT MOUSE CLICK Pos (1723, 155)
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1775, 280}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1772, 274}});
+
+    // 15. LEFT MOUSE CLICK Pos (1723, 155) lamp
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1723, 155}});
 
-    // 16. LEFT MOUSE CLICK Pos (1458, 155)
+    // 16. LEFT MOUSE CLICK Pos (1458, 155) text
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1458, 155}});
 
     // 17. KEYBOARD CTRL + LETTER Text: v

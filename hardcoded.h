@@ -67,6 +67,7 @@ ActionsScript registerHard() {
     // 16. LEFT MOUSE CLICK Pos (1458, 155) text
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1458, 155}});
 
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
     // 17. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 

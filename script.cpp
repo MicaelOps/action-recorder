@@ -454,55 +454,89 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             std::wstring input = getClipboardText();
             std::wstring output;
 
-            std::wregex date_pattern(LR"(\d{2}[a-zA-Z]{3}\d{2})", std::regex_constants::icase);
+            // ========================================
+            // CODE KEYWORDS - Add/remove keywords here
+            // ========================================
+            std::vector<std::wstring> code_keywords = {
+                    L"HD", L"SD", L"MW", L"DEICR", L"BATTERY", L"BAT", L"HO",
+                    L"Handover", L"Boiler", L"Form", L"IMS", L"Rads", L"CB"
+                    // Add more keywords as needed
+            };
+
+            // Updated date pattern to handle:
+            // - Together format: 02jun22, 16Sept22 (3-4 letter months)
+            // - Separated format: 02 jun 22, 16 Sept 22
+            std::wregex date_pattern(LR"((\d{2})\s*([a-zA-Z]{3,4})\s*(\d{2}))", std::regex_constants::icase);
             std::wsmatch date_match;
 
             std::wstring remaining = input;
             std::wstring formatted_date;
 
+            // Extract and format date
             if (std::regex_search(input, date_match, date_pattern)) {
-                std::wstring found_date = date_match.str();
+                std::wstring day = date_match[1].str();
+                std::wstring month = date_match[2].str();
+                std::wstring year = date_match[3].str();
+                formatted_date = day + L" " + month + L" " + year;
 
-                formatted_date = found_date.substr(0, 2) + L" " +
-                                 found_date.substr(2, 3) + L" " +
-                                 found_date.substr(5, 2);
-
+                // Remove date from input
                 remaining = input.substr(0, date_match.position());
             }
 
+            // Trim trailing whitespace
             while (!remaining.empty() && std::iswspace(remaining.back())) {
                 remaining.pop_back();
             }
 
-            std::wstring street_address;
-            std::wstring code_section;
+            // Split remaining into words
+            std::vector<std::wstring> words;
+            std::wstringstream ss(remaining);
+            std::wstring word;
 
-            size_t first_space = remaining.find(L' ');
-            if (first_space != std::wstring::npos) {
-                size_t second_space = remaining.find(L' ', first_space + 1);
-
-                if (second_space != std::wstring::npos) {
-                    size_t third_space = remaining.find(L' ', second_space + 1);
-
-                    if (third_space != std::wstring::npos) {
-                        // Found all three spaces - split after third word
-                        street_address = remaining.substr(0, third_space);
-                        code_section = remaining.substr(third_space + 1);
-
-                        // Trim whitespace from code
-                        while (!code_section.empty() && std::iswspace(code_section.front())) {
-                            code_section.erase(0, 1);
-                        }
-                    } else {
-                        street_address = remaining;
-                    }
-                } else {
-                    street_address = remaining;
-                }
-            } else {
-                street_address = remaining;
+            while (ss >> word) {
+                words.push_back(word);
             }
 
+            // Find where the code section starts (first keyword match)
+            size_t code_start_index = words.size(); // Default: no code section
+
+            for (size_t i = 0; i < words.size(); ++i) {
+                // Check if current word matches any keyword (case-insensitive)
+                for (const auto& keyword : code_keywords) {
+                    // Case-insensitive comparison
+                    std::wstring word_lower = words[i];
+                    std::wstring keyword_lower = keyword;
+
+                    // Convert both to lowercase for comparison
+                    std::transform(word_lower.begin(), word_lower.end(), word_lower.begin(), ::towlower);
+                    std::transform(keyword_lower.begin(), keyword_lower.end(), keyword_lower.begin(), ::towlower);
+
+                    if (word_lower == keyword_lower) {
+                        code_start_index = i;
+                        break;
+                    }
+                }
+
+                if (code_start_index < words.size()) {
+                    break; // Found the start of code section
+                }
+            }
+
+            // Build street address (words before code section)
+            std::wstring street_address;
+            for (size_t i = 0; i < code_start_index; ++i) {
+                if (i > 0) street_address += L" ";
+                street_address += words[i];
+            }
+
+            // Build code section (words from code start onward)
+            std::wstring code_section;
+            for (size_t i = code_start_index; i < words.size(); ++i) {
+                if (i > code_start_index) code_section += L" ";
+                code_section += words[i];
+            }
+
+            // Build final output
             if (!street_address.empty()) {
                 output = street_address;
 

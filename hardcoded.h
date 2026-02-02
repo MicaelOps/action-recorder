@@ -142,6 +142,8 @@ ActionsScript registerHard() {
     // 26. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
+    // 1. LEFT MOUSE CLICK Pos (695, 265) file explorer icon
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{956, 1054}});
 
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
                          std::pair<LOCATION, LOCATION>{LOCATION{1562, 280}, LOCATION{606, 455}}});

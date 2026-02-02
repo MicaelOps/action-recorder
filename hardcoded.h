@@ -127,6 +127,11 @@ ActionsScript registerHard() {
     // fix unknown errors
 
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1212, 267}}); // date issue
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 25});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1212, 267}}); // date issue
+
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1221, 243}}); // insert one or more
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 25});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1221, 243}}); // insert one or more
 
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,

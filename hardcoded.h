@@ -13,6 +13,8 @@ ActionsScript registerHard() {
     // 1. LEFT MOUSE CLICK Pos (695, 265) file explorer icon
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{956, 1054}});
 
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1425, 321}});
+
     // 1. LEFT MOUSE CLICK Pos (695, 265) FILE NAME
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1507, 269}});
 
@@ -131,8 +133,8 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{835, 513}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{835, 503}});
 
-    // 24. LEFT MOUSE CLICK Pos (1769, 575)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1163, 388}});
+    // 24. LEFT MOUSE CLICK Pos (1769, 575) URPN
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1165, 444}});
 
     // 34. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
@@ -140,11 +142,12 @@ ActionsScript registerHard() {
     // 26. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
-    // 1. LEFT MOUSE CLICK Pos (695, 265) file explorer icon
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{956, 1054}});
 
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
                          std::pair<LOCATION, LOCATION>{LOCATION{1562, 280}, LOCATION{606, 455}}});
+
+    // 1. LEFT MOUSE CLICK Pos (695, 265) file explorer icon
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{956, 1054}});
 
 
     // 29. LEFT MOUSE CLICK Pos (1362, 1029) NOTEPAD TASKBAR WINDOW
@@ -173,7 +176,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{898, 15}});
 
     // 36. LEFT MOUSE CLICK Pos (1781, 811) idox date
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1138, 609}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1235, 682}});
 
     // 34. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
@@ -206,8 +209,8 @@ ActionsScript registerHard() {
     // idox tab
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{898, 15}});
 
-    // 45. LEFT MOUSE CLICK Pos (1780, 737)
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1178, 540}});
+    // 45. LEFT MOUSE CLICK Pos (1780, 737) idox document code
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1216, 619}});
 
     // 34. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});

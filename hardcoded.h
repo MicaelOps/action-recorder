@@ -21,6 +21,10 @@ ActionsScript registerHard() {
 
     // 4. WAIT_MILLISECONDS Number: 400
     hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 400});
+    // 5. KEYBOARD CTRL + LETTER Text: c
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+    // 5. KEYBOARD CTRL + LETTER Text: c
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
 
     // 5. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
@@ -49,6 +53,10 @@ ActionsScript registerHard() {
     // 12. LEFT MOUSE CLICK Pos (973, 333) ADDRESS LINE
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1016, 148}});
 
+    // 13. KEYBOARD CTRL + LETTER Text: c
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+    // 13. KEYBOARD CTRL + LETTER Text: c
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
     // 13. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
 
@@ -96,10 +104,10 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});
 
     // fix unknown errors
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1676, 894}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1709, 252}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1706, 294}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1694, 289}});
-
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1697, 269}});
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
                          std::pair<LOCATION, LOCATION>{LOCATION{1900, 149}, LOCATION{1900, 149}}});
 

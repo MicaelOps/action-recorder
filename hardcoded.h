@@ -13,6 +13,8 @@ ActionsScript registerHard() {
     // 1. LEFT MOUSE CLICK Pos (695, 265) file explorer icon
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{956, 1054}});
 
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1907, 923}});
+
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1425, 321}});
 
     // 1. LEFT MOUSE CLICK Pos (695, 265) FILE NAME
@@ -220,15 +222,8 @@ ActionsScript registerHard() {
     // 46. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
-
     // 45. LEFT MOUSE CLICK Pos (1780, 737) insert
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1100, 701}});
-
-    // 1. LEFT MOUSE CLICK Pos (695, 265) file explorer icon
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{956, 1054}});
-
-
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1907, 923}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1100, 762}});
 
     return hardcoded;
 }

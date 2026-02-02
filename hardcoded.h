@@ -97,6 +97,12 @@ ActionsScript registerHard() {
 
     // fix unknown errors
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1676, 894}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1709, 252}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1694, 289}});
+
+    hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
+                         std::pair<LOCATION, LOCATION>{LOCATION{1900, 149}, LOCATION{1900, 149}}});
+
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1585, 639}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1564, 637}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1525, 637}});
@@ -119,6 +125,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1579, 682}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1602, 683}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1620, 683}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});
 
     // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,

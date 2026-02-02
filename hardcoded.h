@@ -95,6 +95,10 @@ ActionsScript registerHard() {
     // 23. LEFT MOUSE CLICK Pos (1485, 51) IDOX TAB
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});
 
+    // fix unknown errors
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1676, 894}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1585, 703}});
+
     // 27. DRAG_MOUSE From (695, 265) To (1455, 173)
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
                          std::pair<LOCATION, LOCATION>{LOCATION{1901, 952}, LOCATION{1901, 952}}});

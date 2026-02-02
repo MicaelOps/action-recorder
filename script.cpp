@@ -453,13 +453,36 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
         }
         case ACTION_TYPE::SPECIAL_FUNCTION2: { // file name
             std::wstring input = getClipboardText();
+
+            // Retry if clipboard is empty (not ready yet)
+            int retries = 0;
+            while (input.empty() && retries < 3) {
+                Sleep(100);
+                input = getClipboardText();
+                retries++;
+            }
+
             std::wstring output;
+
+            // ========================================
+            // PREPROCESSING: Handle special cases
+            // ========================================
+
+            // 1. Handle number ranges like "8-13 pen close" → "13 pen close"
+            //    Matches: digits, hyphen, digits at start of string
+            std::wregex range_pattern(LR"(^\d+-(\d+\s+))", std::regex_constants::icase);
+            input = std::regex_replace(input, range_pattern, L"$1");
+
+            // 2. Handle hyphen before code keywords like "15 pen close-mw" → "15 pen close mw"
+            //    Replace hyphen with space if it's followed by letters (likely a code)
+            std::wregex hyphen_code_pattern(LR"(-([a-zA-Z]))", std::regex_constants::icase);
+            input = std::regex_replace(input, hyphen_code_pattern, L" $1");
 
             // ========================================
             // CODE KEYWORDS - Add/remove keywords here
             // ========================================
             std::vector<std::wstring> code_keywords = {
-                    L"HD", L"SD", L"MW", L"FIREDOOR", L"FIRE", L"ct", L" Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
+                    L"HD", L"SD", L"MW", L"FIREDOOR", L"- ", L"-", L"cr", L"EIR", L"cr", L"eicr", L"bcn", L"ct", L"emer", L"trada", L"bmtrada", L"BM", L"FIRE", L"ct", L"Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
                     L"Handover", L"Boiler", L"Form", L"IMS", L"CB", L"CB5", L"CB4", L"CB3", L"HWT", L"EIC", L"Asbestos", L"DA KIT", L"LAS HO", L"TEST", L"TEST ONLY"
                     // Add more keywords as needed
             };
@@ -546,23 +569,24 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                 code_section += words[i];
             }
 
+            // Safety: If no address found (empty input), use placeholder
+            if (street_address.empty()) {
+                street_address = L"NO ADDRESS";
+            }
+
             // If no code section found, use default
             if (code_section.empty()) {
                 code_section = L"cert";
             }
 
-            // Build final output
-            if (!street_address.empty()) {
-                output = street_address;
-                output += L"\n" + formatted_date;
-                output += L"\n" + code_section;
+            // Build final output - ALWAYS output something
+            output = street_address;
+            output += L"\n" + formatted_date;
+            output += L"\n" + code_section;
 
-                // Set to clipboard
-                setClipboardText(output);
-                std::wcout << L"Processed:\n" << output << L"\n";
-            } else {
-                std::cout << "Unable to parse address\n";
-            }
+            // Set to clipboard
+            setClipboardText(output);
+            std::wcout << L"Processed:\n" << output << L"\n";
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION3: // paste the remaining

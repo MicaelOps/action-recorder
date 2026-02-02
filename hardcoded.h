@@ -35,8 +35,12 @@ ActionsScript registerHard() {
     // 7. LEFT MOUSE CLICK Pos (1200, 594) NOTEPAD TAB
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1200, 594}});
 
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
+
     // 8. SPECIAL_FUNCTION2
     hardcoded.addAction({ACTION_TYPE::SPECIAL_FUNCTION2, std::monostate()});
+
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
 
     // 34. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
@@ -97,8 +101,11 @@ ActionsScript registerHard() {
     // 21. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
 
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
+
     // 22. SPECIAL FUNCTION
     hardcoded.addAction({ACTION_TYPE::SPECIAL_FUNCTION, std::monostate()});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
 
     // 23. LEFT MOUSE CLICK Pos (1485, 51) IDOX TAB
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1485, 51}});

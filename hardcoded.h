@@ -100,6 +100,9 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 4400});
 
     // fk hihg
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 729}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 724}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 734}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 704}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 714}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 690}});
@@ -108,6 +111,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 648}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 627}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{816, 604}});
+
 
     // 20. KEYBOARD CTRL + LETTER Text: a
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
@@ -237,6 +241,7 @@ ActionsScript registerHard() {
     // 46. KEYBOARD CTRL + LETTER Text: v
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1118, 769}});
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1118, 769}});
     return hardcoded;
 }

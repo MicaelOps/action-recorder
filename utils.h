@@ -5,7 +5,6 @@
 #ifndef ACTION_RECORDER_UTILS_H
 #define ACTION_RECORDER_UTILS_H
 
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 void registerHookThread(HHOOK& hook, DWORD& hookWinThreadID, HOOKPROC function);

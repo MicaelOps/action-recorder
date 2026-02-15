@@ -464,32 +464,19 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
 
             std::wstring output;
 
-            // ========================================
-            // PREPROCESSING: Handle special cases
-            // ========================================
-
-            // 1. Handle number ranges like "8-13 pen close" → "13 pen close"
-            //    Matches: digits, hyphen, digits at start of string
             std::wregex range_pattern(LR"(^\d+-(\d+\s+))", std::regex_constants::icase);
             input = std::regex_replace(input, range_pattern, L"$1");
 
-            // 2. Handle hyphen before code keywords like "15 pen close-mw" → "15 pen close mw"
-            //    Replace hyphen with space if it's followed by letters (likely a code)
             std::wregex hyphen_code_pattern(LR"(-([a-zA-Z]))", std::regex_constants::icase);
             input = std::regex_replace(input, hyphen_code_pattern, L" $1");
 
-            // ========================================
-            // CODE KEYWORDS - Add/remove keywords here
-            // ========================================
             std::vector<std::wstring> code_keywords = {
                     L"HD", L"SD", L"MW", L"FIREDOOR", L"- ", L"-", L"cr", L"ELE", L"EIR", L"cr", L"eicr", L"bcn", L"ct", L"emer", L"trada", L"bmtrada", L"BM", L"FIRE", L"ct", L"Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
                     L"Handover", L"Boiler", L"Form", L"IMS", L"CB", L"CB5", L"CB4", L"CB3", L"HWT", L"EIC", L"Asbestos", L"DA KIT", L"LAS HO", L"TEST", L"TEST ONLY"
                     // Add more keywords as needed
             };
 
-            // Updated date pattern to handle:
-            // - Together format: 02jun22, 16Sept22 (3-4 letter months)
-            // - Separated format: 02 jun 22, 16 Sept 22
+
             std::wregex date_pattern(LR"((\d{2})\s*([a-zA-Z]{3,4})\s*(\d{2}))", std::regex_constants::icase);
             std::wsmatch date_match;
 
@@ -525,16 +512,15 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             }
 
             // Find where the code section starts (first keyword match)
-            size_t code_start_index = words.size(); // Default: no code section
+            size_t code_start_index = words.size();
 
             for (size_t i = 0; i < words.size(); ++i) {
-                // Check if current word matches any keyword (case-insensitive)
+
                 for (const auto& keyword : code_keywords) {
-                    // Case-insensitive comparison
+
                     std::wstring word_lower = words[i];
                     std::wstring keyword_lower = keyword;
 
-                    // Convert both to lowercase for comparison
                     std::transform(word_lower.begin(), word_lower.end(), word_lower.begin(), ::towlower);
                     std::transform(keyword_lower.begin(), keyword_lower.end(), keyword_lower.begin(), ::towlower);
 

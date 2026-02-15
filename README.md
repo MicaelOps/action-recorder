@@ -25,5 +25,4 @@ Who is this program intended for?
 Just me
 
 
--> The beautifying process of this code will be left for later (never)
--> I've broken so many programming principles just because i want to get this program done quickly.
+-> The program already works, but just for the specific function I intended to. Later on I will add more flexibility

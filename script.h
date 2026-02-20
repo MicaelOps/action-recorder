@@ -24,6 +24,8 @@ enum class ACTION_TYPE : unsigned short {
     DRAG_MOUSE = 8,
     SPECIAL_FUNCTION2 = 9,
     SPECIAL_FUNCTION3 = 10,
+    SPECIAL_FUNCTION4 = 12,
+    SPECIAL_FUNCTION5 = 13,
     REPEAT_SCRIPT = 11,
 
 };

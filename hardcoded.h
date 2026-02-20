@@ -7,6 +7,46 @@
 
 #include "script.h"
 
+ActionsScript registerExel() {
+    ActionsScript excel("excelgenius");
+
+
+    // notepad icon
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1291, 1032}});
+
+    //line
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{140, 129}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{140, 129}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{140, 129}});
+
+    // Delete current line
+    WORD delKey = VK_DELETE;
+    excel.addAction({ACTION_TYPE::INSERT_VKKEY, delKey});
+
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{140, 129}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{140, 129}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{140, 129}});
+    excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+
+    excel.addAction({ACTION_TYPE::SPECIAL_FUNCTION4, std::monostate()});
+
+    //browser icon
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1018, 1042}});
+
+    // SM task id box
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{427, 593}});
+    excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
+    excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
+    excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 2000});
+
+    // click away
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{863, 353}});
+    excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
+    excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+    excel.addAction({ACTION_TYPE::SPECIAL_FUNCTION5, std::monostate()});
+    return excel;
+}
+
 ActionsScript registerHard() {
     ActionsScript hardcoded("final");
 

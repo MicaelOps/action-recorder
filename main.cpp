@@ -64,6 +64,7 @@ int main() {
     std::string command;
     SetProcessDPIAware();
     scripts.push_back(registerHard());
+    scripts.push_back(registerExel());
 
     do {
 

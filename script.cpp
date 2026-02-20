@@ -14,6 +14,7 @@
 #include <cwctype>
 
 bool stop_playing = false;
+double pricedealing = 0;
 HHOOK hooka;
 
 // Stop mechanism
@@ -305,6 +306,10 @@ std::string WINDOWS_ACTION::getActionName() const noexcept {
             return "SPECIAL_FUNCTION3";
         case ACTION_TYPE::REPEAT_SCRIPT:
             return "REPEAT_SCRIPT";
+        case ACTION_TYPE::SPECIAL_FUNCTION4:
+            return "SPECIAL_FUNCTION4";
+        case ACTION_TYPE::SPECIAL_FUNCTION5:
+            return "SPECIAL_FUNCTION5";
     }
     return "unknown action";
 }
@@ -449,6 +454,123 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             // Release mouse button
             input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
             SendInput(1, &input, sizeof(INPUT));
+            break;
+        }
+        case ACTION_TYPE::SPECIAL_FUNCTION4: {
+            // Open the clipboard
+            if (!OpenClipboard(nullptr)) {
+                std::cout << "UNABLE TO TO GET CLIPBOARD" << std::endl;
+
+                return;
+            }
+
+            // Get the clipboard content (text format)
+            HANDLE hData = GetClipboardData(CF_TEXT);
+            if (hData == nullptr) {
+                std::cout << "Failed to get clipboard data!" << std::endl;
+                CloseClipboard();
+                return;
+            }
+
+            // Lock the handle to get the text pointer
+            char *pszText = static_cast<char *>(GlobalLock(hData));
+            if (pszText == nullptr) {
+                std::cout << "Failed to lock clipboard data!" << std::endl;
+                CloseClipboard();
+                return;
+            }
+
+            // Convert to std::string
+            std::string clipboardText(pszText);
+
+            // Close the clipboard
+            GlobalUnlock(hData);
+
+            // Regex pattern to match the task and number
+            std::regex pattern(R"(SM-Task-(\d{5})\s+(\d+(\.\d{1,2})?))");
+
+            std::smatch matches;
+            if (std::regex_search(clipboardText, matches, pattern)) {
+
+                std::string task = "SM-Task-" + matches[1].str();  // Task ID
+                pricedealing = std::stod(matches[2].str());  // Number
+                std::cout << "proccessing "<< task << " "  << pricedealing << std::endl;
+                EmptyClipboard();
+
+                // Allocate memory for the task string and copy it to the clipboard
+                HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, task.size() + 1);
+                if (hGlobal) {
+                    char *pData = static_cast<char *>(GlobalLock(hGlobal));
+                    memcpy(pData, task.c_str(), task.size() + 1);
+                    GlobalUnlock(hGlobal);
+                    SetClipboardData(CF_TEXT, hGlobal);
+                }
+            } else {
+                std::cerr << "No matching format found!" << std::endl;
+            }
+            CloseClipboard();
+            break;
+        }
+        case ACTION_TYPE::SPECIAL_FUNCTION5: {
+            if (!OpenClipboard(nullptr)) {
+                std::cout << "Failed t55o open clipboard!" << std::endl;
+                break;
+            }
+
+            // Get the clipboard content (text format)
+            HANDLE hData = GetClipboardData(CF_TEXT);
+            if (hData == nullptr) {
+                std::cout << "Failed 55to get clipboard data!" << std::endl;
+                CloseClipboard();
+                break;
+            }
+
+            // Lock the handle to get the text pointer
+            char* pszText = static_cast<char*>(GlobalLock(hData));
+            if (pszText == nullptr) {
+                std::cout << "Failed to55 lock clipboard data!" << std::endl;
+                CloseClipboard();
+                break;
+            }
+
+            // Convert to std::string
+            std::string clipboardText(pszText);
+
+            // Close the clipboard after locking
+            GlobalUnlock(hData);
+            CloseClipboard();
+
+            // Regex pattern to find the first £ followed by a number, with optional commas and decimals
+            std::regex pattern(R"(\£\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?))");
+
+            std::smatch matches;
+            if (std::regex_search(clipboardText, matches, pattern)) {
+                std::string amountStr = matches[1].str();
+
+                // Remove commas (if present)
+                amountStr.erase(std::remove(amountStr.begin(), amountStr.end(), ','), amountStr.end());
+
+                // Convert to double
+                try {
+                    std::stringstream ss(amountStr);
+                    double amount = 0.0;
+                    ss >> amount;
+
+                    if(pricedealing == amount) {
+                        std::cout << "price match!";
+                    } else {
+                        std::cout << "price did not match";
+                    }
+                    break;
+                }
+                catch (const std::exception& e) {
+                    std::cout << "Failed to convert amount: " << e.what() << std::endl;
+                    break;
+                }
+            } else {
+                std::cout << "No valid pound amount found!" << std::endl;
+                break;
+            }
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION2: { // file name

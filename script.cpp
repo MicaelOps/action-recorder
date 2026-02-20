@@ -539,8 +539,10 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             CloseClipboard();
 
 
+
             // Regex pattern to find the first £ followed by a number, with optional commas and decimals
-            std::wregex pattern(LR"(\£\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?))");
+            std::wregex pattern(LR"(\u00A3\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?))");
+
 
             std::wsmatch matches;
             if (std::regex_search(clipboardText, matches, pattern)) {

@@ -57,7 +57,6 @@ void ActionsScript::playAllActions(bool repeater) const {
     }
 
     while(temp && !stop_playing) {
-        std::cout << "aaeee";
         temp->val.playAction(repeater);
         temp = temp->next.get();
         Sleep(300);
@@ -518,7 +517,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             }
 
             // Get the clipboard content (text format)
-            HANDLE hData = GetClipboardData(CF_TEXT);
+            HANDLE hData = GetClipboardData(CF_UNICODETEXT);
             if (hData == nullptr) {
                 std::cout << "Failed 55to get clipboard data!" << std::endl;
                 CloseClipboard();
@@ -526,7 +525,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             }
 
             // Lock the handle to get the text pointer
-            char* pszText = static_cast<char*>(GlobalLock(hData));
+            auto* pszText = static_cast<wchar_t*>(GlobalLock(hData));
             if (pszText == nullptr) {
                 std::cout << "Failed to55 lock clipboard data!" << std::endl;
                 CloseClipboard();
@@ -534,27 +533,25 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             }
 
             // Convert to std::string
-            std::string clipboardText(pszText);
-
+            std::wstring clipboardText(pszText);
             // Close the clipboard after locking
             GlobalUnlock(hData);
             CloseClipboard();
 
-            // Regex pattern to find the first £ followed by a number, with optional commas and decimals
-            std::regex pattern(R"(\£\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?))");
 
-            std::smatch matches;
+            // Regex pattern to find the first £ followed by a number, with optional commas and decimals
+            std::wregex pattern(LR"(\£\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?))");
+
+            std::wsmatch matches;
             if (std::regex_search(clipboardText, matches, pattern)) {
-                std::string amountStr = matches[1].str();
+                std::wstring amountStr = matches[1].str();
 
                 // Remove commas (if present)
-                amountStr.erase(std::remove(amountStr.begin(), amountStr.end(), ','), amountStr.end());
+                amountStr.erase(std::remove(amountStr.begin(), amountStr.end(), L','), amountStr.end());
 
                 // Convert to double
                 try {
-                    std::stringstream ss(amountStr);
-                    double amount = 0.0;
-                    ss >> amount;
+                    double amount = std::stod(amountStr);
 
                     if(pricedealing == amount) {
                         std::cout << "price match!";

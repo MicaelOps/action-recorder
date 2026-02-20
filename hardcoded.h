@@ -43,6 +43,7 @@ ActionsScript registerExel() {
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{863, 353}});
     excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
     excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+    excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 300});
     excel.addAction({ACTION_TYPE::SPECIAL_FUNCTION5, std::monostate()});
     return excel;
 }

@@ -482,7 +482,6 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             // Convert to std::string
             std::string clipboardText(pszText);
 
-            // Close the clipboard
             GlobalUnlock(hData);
 
             // Regex pattern to match the task and number
@@ -536,7 +535,9 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             std::wstring clipboardText(pszText);
             // Close the clipboard after locking
             GlobalUnlock(hData);
-            CloseClipboard();
+
+            EmptyClipboard();
+
 
 
 
@@ -555,21 +556,36 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                 try {
                     double amount = std::stod(amountStr);
 
+
                     if(pricedealing == amount) {
-                        std::cout << "price match!";
+                        std::cout << "price match! " << amount << "\n ";
                     } else {
-                        std::cout << "price did not match";
+                        std::cout << "price did not match " << amount << "\n";
                     }
+                    // Allocate memory for the text in the clipboard
+                    size_t size = (amountStr.size() + 1) * sizeof(wchar_t); // +1 for the null terminator
+                    HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, size);
+                    if (hGlob) {
+                        memcpy(hGlob, amountStr.c_str(), size);
+
+                        SetClipboardData(CF_UNICODETEXT, hGlob);
+                    }
+
+
+                    CloseClipboard();
                     break;
                 }
                 catch (const std::exception& e) {
+                    CloseClipboard();
                     std::cout << "Failed to convert amount: " << e.what() << std::endl;
                     break;
                 }
             } else {
+                CloseClipboard();
                 std::cout << "No valid pound amount found!" << std::endl;
                 break;
             }
+            CloseClipboard();
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION2: { // file name

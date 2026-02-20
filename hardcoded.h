@@ -35,14 +35,20 @@ ActionsScript registerExel() {
 
     //excel tab
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1429, 26}});
+
     //  arrow options
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{516, 358}});
+    excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
     // search box
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{712, 577}});
     excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
-
+    excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
     // click apply
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{676, 953}});
+    excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 100});
+
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{997, 428}});
+    excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 100});
 
     // FD tab
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1196, 25}});

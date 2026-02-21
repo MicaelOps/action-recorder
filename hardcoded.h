@@ -38,6 +38,7 @@ ActionsScript registerExel() {
 
     //  arrow options
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{517, 348}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{530, 348}});
     excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
     // search box
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{678, 585}});

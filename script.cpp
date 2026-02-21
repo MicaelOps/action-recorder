@@ -23,6 +23,7 @@ LRESULT CALLBACK StopPlayingProc(int nCode, WPARAM wParam, LPARAM lParam) {
         if(wParam == WM_RBUTTONDOWN) {
             stop_playing = true;
             std::cout << "Play interrupted! \n";
+            PostThreadMessage(GetCurrentThreadId(), WM_QUIT, 0, 0);
         }
     }
     return CallNextHookEx(hooka, nCode, wParam, lParam);
@@ -63,7 +64,7 @@ void ActionsScript::playAllActions(bool repeater) const {
     }
 
     // Was the script interrupted or finished?
-    if(stop_playing)
+    if(stop_playing && !repeater)
         stop_playing = false;
 }
 void ActionsScript::printAllActions() const {
@@ -716,14 +717,21 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             break;
         case ACTION_TYPE::REPEAT_SCRIPT:
 
-            auto repeatinfo = std::get<std::pair<ActionsScript*, int>>(data);
-
+            // make sure we dont repeat infinitely
             if(!repeaterCall) {
-                std::cout << "first time repeater ";
+
+                auto repeatinfo = std::get<std::pair<ActionsScript*, int>>(data);
+
                 repeatinfo.first->toggleRepeater();
+
                 for(int i = 0; i < repeatinfo.second; ++i) {
+
+                    if(stop_playing)
+                        break;
+
                     repeatinfo.first->playAllActions(true);
                 }
+                stop_playing = false;
                 repeatinfo.first->toggleRepeater();
             }
             break;

@@ -37,14 +37,14 @@ ActionsScript registerExel() {
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1429, 26}});
 
     //  arrow options
-    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{516, 358}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{517, 348}});
     excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
     // search box
-    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{712, 577}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{678, 585}});
     excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
     excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
     // click apply
-    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{676, 953}});
+    excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{651, 959}});
     excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 100});
 
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{997, 428}});
@@ -69,6 +69,7 @@ ActionsScript registerExel() {
     // back to excel
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1429, 26}});
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{455, 258}});
+    excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
     excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
     return excel;

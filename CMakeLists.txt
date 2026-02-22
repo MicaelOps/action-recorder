@@ -23,4 +23,5 @@ add_executable(action-recorder main.cpp
         utils.cpp
         utils.cpp
         script.cpp
-        hardcoded.h)
+        hardcoded.h
+        globals.h)

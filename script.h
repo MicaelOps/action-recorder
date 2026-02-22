@@ -36,12 +36,14 @@ struct LOCATION {
 
 struct WINDOWS_ACTION {
     ACTION_TYPE action;
-    std::variant<std::monostate, std::string, LOCATION, unsigned short, int, std::pair<LOCATION, LOCATION>, std::pair<ActionsScript*, int>> data; // Location for mouse clicks, text for keyboard
+    std::variant<std::monostate, std::string, LOCATION, unsigned short, int, std::pair<LOCATION, LOCATION>, std::pair<std::string, int>> data; // Location for mouse clicks, text for keyboard
 
-    [[nodiscard]] std::string getActionName() const noexcept;
+    [[nodiscard]] std::string_view getActionName() const noexcept;
+    [[nodiscard]] bool playAction(bool repeaterCall) const noexcept;
+
+
     void printAction() const noexcept;
 
-    void playAction(bool repeaterCall) const noexcept;
 };
 
 
@@ -55,13 +57,15 @@ struct ScriptNode {
 class ActionsScript {
 
 private:
-    bool repeating = false; // detect if script is being repeated
     std::string name;
     int size = 0;
     std::unique_ptr<ScriptNode> header;
     ScriptNode* footer = nullptr;
 
 public:
+
+    ActionsScript(ActionsScript&&) noexcept = default;
+    ActionsScript& operator=(ActionsScript&&) noexcept = default;
     explicit ActionsScript(std::string name) : name(std::move(name)), header(nullptr) {}
 
     void insertActionAt(WINDOWS_ACTION action, int pos);
@@ -73,11 +77,7 @@ public:
     void playAllActions(bool repeaterCall) const;
     void printAllActions() const;
 
-    void toggleRepeater()  noexcept;
-
-    [[nodiscard]] bool isRepeating() const noexcept;
-
-    [[nodiscard]] std::string getName() const noexcept;
+    [[nodiscard]] std::string_view getName() const noexcept;
 
     [[nodiscard]] int getNumberOfActions() const noexcept;
 

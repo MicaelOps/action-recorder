@@ -4,7 +4,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#include "script.h"
+#include "globals.h"
 #include "utils.h"
 #include <iostream>
 #include <thread>
@@ -16,6 +16,7 @@
 bool stop_playing = false;
 double pricedealing = 0;
 HHOOK hooka;
+
 
 // Stop mechanism
 LRESULT CALLBACK StopPlayingProc(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -49,7 +50,7 @@ void ActionsScript::playAllActions(bool repeater) const {
     DWORD local_threadID;
 
 
-    if (!isRepeating()){
+    if (!repeater){
         std::jthread hookworker([&](HOOKPROC func) {
             registerHookThread(hooka, local_threadID, func);
         }, StopPlayingProc);
@@ -58,13 +59,21 @@ void ActionsScript::playAllActions(bool repeater) const {
     }
 
     while(temp && !stop_playing) {
-        temp->val.playAction(repeater);
+
+        // Should we stop running the script??! (for now, only special functions have this functionality)
+        bool crash_script = temp->val.playAction(repeater);
+
+        if(crash_script) {
+            stop_playing = true; // indicates the REPEAT_SCRIPT that it should not run again!
+            break;
+        }
+
         temp = temp->next.get();
         Sleep(300);
     }
 
-    // Was the script interrupted or finished?
-    if(stop_playing && !repeater)
+    // Reset the stop_playing to false because REPEAT_SCRIPT action does it by itself
+    if(!repeater)
         stop_playing = false;
 }
 void ActionsScript::printAllActions() const {
@@ -80,15 +89,7 @@ void ActionsScript::printAllActions() const {
     }
 }
 
-void ActionsScript::toggleRepeater()  noexcept{
-    repeating = !repeating;
-}
-
-[[nodiscard]] bool ActionsScript::isRepeating() const noexcept {
-    return repeating;
-}
-
-[[nodiscard]] std::string ActionsScript::getName() const noexcept{
+[[nodiscard]] std::string_view ActionsScript::getName() const noexcept{
     return name;
 }
 
@@ -251,7 +252,8 @@ void WINDOWS_ACTION::printAction() const noexcept {
                   << locPair->first.X << " , " << locPair->first.Y << ")"
                   << " To ("
                   << locPair->second.X << " , " << locPair->second.Y << ")\n";
-
+    } else if(auto* repeatinfo = std::get_if<std::pair<std::string, int>>(&data)) {
+        std::cout << " Times: " << repeatinfo->second << " \n";
     } else {
         // std::monostate or unknown
         std::cout << "\n";
@@ -280,7 +282,7 @@ std::wstring getClipboardText() {
     CloseClipboard();
     return result;
 }
-std::string WINDOWS_ACTION::getActionName() const noexcept {
+std::string_view WINDOWS_ACTION::getActionName() const noexcept {
     switch(action) {
         case ACTION_TYPE::LEFT_MOUSE_CLICK:
             return "LEFT MOUSE CLICK";
@@ -314,7 +316,7 @@ std::string WINDOWS_ACTION::getActionName() const noexcept {
     return "unknown action";
 }
 
-void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
+bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
     std::vector<INPUT> inputs;
     switch(action) {
         case ACTION_TYPE::LEFT_MOUSE_CLICK: {
@@ -395,6 +397,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
 
             if (pos == std::wstring::npos) {
                 std::cout << "Unable to find NLPG Number \n";
+                return true;
             } else {
                 pos += wcslen(L"NLPG Ref.No:");
 
@@ -460,8 +463,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             // Open the clipboard
             if (!OpenClipboard(nullptr)) {
                 std::cout << "UNABLE TO TO GET CLIPBOARD" << std::endl;
-
-                return;
+                return true;
             }
 
             // Get the clipboard content (text format)
@@ -469,7 +471,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             if (hData == nullptr) {
                 std::cout << "Failed to get clipboard data!" << std::endl;
                 CloseClipboard();
-                return;
+                return true;
             }
 
             // Lock the handle to get the text pointer
@@ -477,7 +479,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             if (pszText == nullptr) {
                 std::cout << "Failed to lock clipboard data!" << std::endl;
                 CloseClipboard();
-                return;
+                return true;
             }
 
             // Convert to std::string
@@ -506,6 +508,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                 }
             } else {
                 std::cerr << "No matching format found!" << std::endl;
+                return true;
             }
             CloseClipboard();
             break;
@@ -513,7 +516,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
         case ACTION_TYPE::SPECIAL_FUNCTION5: {
             if (!OpenClipboard(nullptr)) {
                 std::cout << "Failed t55o open clipboard!" << std::endl;
-                break;
+                return true;
             }
 
             // Get the clipboard content (text format)
@@ -521,7 +524,7 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             if (hData == nullptr) {
                 std::cout << "Failed 55to get clipboard data!" << std::endl;
                 CloseClipboard();
-                break;
+                return true;
             }
 
             // Lock the handle to get the text pointer
@@ -529,22 +532,17 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             if (pszText == nullptr) {
                 std::cout << "Failed to55 lock clipboard data!" << std::endl;
                 CloseClipboard();
-                break;
+                return true;
             }
 
             // Convert to std::string
             std::wstring clipboardText(pszText);
-            // Close the clipboard after locking
             GlobalUnlock(hData);
 
             EmptyClipboard();
 
-
-
-
             // Regex pattern to find the first £ followed by a number, with optional commas and decimals
             std::wregex pattern(LR"(\u00A3\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?))");
-
 
             std::wsmatch matches;
             if (std::regex_search(clipboardText, matches, pattern)) {
@@ -572,19 +570,18 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                         SetClipboardData(CF_UNICODETEXT, hGlob);
                     }
 
-
                     CloseClipboard();
                     break;
                 }
                 catch (const std::exception& e) {
                     CloseClipboard();
                     std::cout << "Failed to convert amount: " << e.what() << std::endl;
-                    break;
+                    return true;
                 }
             } else {
                 CloseClipboard();
                 std::cout << "No valid pound amount found!" << std::endl;
-                break;
+                return true;
             }
             CloseClipboard();
             break;
@@ -609,9 +606,8 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             input = std::regex_replace(input, hyphen_code_pattern, L" $1");
 
             std::vector<std::wstring> code_keywords = {
-                    L"HD", L"SD", L"MW", L"FIREDOOR", L"- ", L"-", L"cr", L"ELE", L"EIR", L"cr", L"eicr", L"bcn", L"ct", L"emer", L"trada", L"bmtrada", L"BM", L"FIRE", L"ct", L"Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
+                    L"HD", L"SD", L"MW", L"CO", L"FIREDOOR", L"LAS", L"- ", L"-", L"cr", L"ELE", L"EIR", L"cr", L"eicr", L"bcn", L"ct", L"emer", L"trada", L"bmtrada", L"BM", L"FIRE", L"ct", L"Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
                     L"Handover", L"Boiler", L"Form", L"IMS", L"CB", L"CB5", L"CB4", L"CB3", L"HWT", L"EIC", L"Asbestos", L"DA KIT", L"LAS HO", L"TEST", L"TEST ONLY"
-                    // Add more keywords as needed
             };
 
 
@@ -720,19 +716,16 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             // make sure we dont repeat infinitely
             if(!repeaterCall) {
 
-                auto repeatinfo = std::get<std::pair<ActionsScript*, int>>(data);
-
-                repeatinfo.first->toggleRepeater();
+                auto repeatinfo = std::get<std::pair<std::string, int>>(data);
 
                 for(int i = 0; i < repeatinfo.second; ++i) {
 
                     if(stop_playing)
                         break;
 
-                    repeatinfo.first->playAllActions(true);
+                    scripts.find(repeatinfo.first)->second.playAllActions(true);
                 }
                 stop_playing = false;
-                repeatinfo.first->toggleRepeater();
             }
             break;
     }
@@ -744,4 +737,5 @@ void WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                 sizeof(INPUT)
         );
     }
+    return false;
 }

@@ -12,6 +12,7 @@
 #include <queue>
 #include <utility>
 #include <algorithm>
+#include <unordered_map>
 
 void createMenu();
 
@@ -19,18 +20,15 @@ void playScript();
 
 void analyseScript();
 
+void recordScript();
 
 
-
-
-size_t currScript = -1;
+std::string currScript;
 
 HHOOK hook;
 DWORD hookWinThreadID = 0;
 
-
-std::vector<ActionsScript> scripts;
-
+std::unordered_map<std::string , ActionsScript> scripts;
 
 LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if (nCode >= 0) {
@@ -38,19 +36,20 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
         auto* info = (MSLLHOOKSTRUCT*)lParam;
         LOCATION location = {info->pt.x, info->pt.y};
 
+        auto script = scripts.find(currScript);
         if (wParam == WM_LBUTTONDOWN) {
 
             WINDOWS_ACTION windowsAction = {ACTION_TYPE::LEFT_MOUSE_CLICK, location};
 
-            scripts[currScript].addAction(windowsAction);
+            script->second.addAction(windowsAction);
 
-            std::cout << "MSLLHOOKSTRUCT Location: " << scripts[currScript].getNumberOfActions() << " Left click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
+            std::cout << "Action " <<  script->second.getNumberOfActions() << " Left click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
 
         } else if(wParam == WM_RBUTTONDOWN) {
             WINDOWS_ACTION windowsAction = {ACTION_TYPE::RIGHT_MOUSE_CLICK, location};
 
-            scripts[currScript].addAction(windowsAction);
-            std::cout << "Action: " << scripts[currScript].getNumberOfActions() << " Right click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
+            script->second.addAction(windowsAction);
+            std::cout << "Action: " <<  script->second.getNumberOfActions() << " Right click detected at (" << info->pt.x << ", " << info->pt.y << ")\n";
         }
     }
     return CallNextHookEx(hook, nCode, wParam, lParam);
@@ -63,9 +62,10 @@ int main() {
     std::cout << "Welcome to the recorder. \n";
     std::string command;
     SetProcessDPIAware();
-    scripts.push_back(registerHard());
-    scripts.push_back(registerExel());
 
+    ActionsScript ee = registerHard(), aa = registerExel();
+    scripts.insert({"excelgenius", std::move(ee)});
+    scripts.insert({"final", std::move(aa)});
     do {
 
         std::cout << "To play a script type play, to start recording a script type record, to edit the record type analyse. \n";
@@ -80,31 +80,8 @@ int main() {
         } else if(command == "create") {
             createMenu();
 
-        } else if(command == "finish") {
-            if(hookWinThreadID == 0)
-                std::cout << "There is no recording occurring. \n";
-            else {
-                PostThreadMessage(hookWinThreadID, WM_QUIT, 0, 0);
-                std::cout << "Recording has been finished.";
-            }
-
         } else if(command == "record") {
-
-            std::string scriptname;
-            std::cout << "Input the script name \n";
-            std::cin >> scriptname;
-
-            std::cout << "To finish recording type finish. \n";
-            currScript = scripts.size();
-            scripts.emplace_back(scriptname);
-
-
-            std::jthread hookworker([&](HOOKPROC func) {
-                registerHookThread(hook, hookWinThreadID, func);
-            }, MouseProc);
-
-            hookworker.detach();
-            Sleep(100);
+            recordScript();
         }
 
     } while(command != "stop");
@@ -186,7 +163,7 @@ void analyseScript(ActionsScript& script) {
             std::cout << "Action added successfully. \n";
         } else if(command.starts_with("repeat")) {
             int pos = std::stoi(command.substr(7));
-            WINDOWS_ACTION action = {ACTION_TYPE::REPEAT_SCRIPT, std::make_pair(&script, pos)};
+            WINDOWS_ACTION action = {ACTION_TYPE::REPEAT_SCRIPT, std::make_pair(std::string(script.getName()), pos)};
             script.addAction(action);
             std::cout << "Action added successfully. \n";
         } else if(command.starts_with("remove")) {
@@ -265,15 +242,15 @@ void createMenu() {
     std::cout << "Input the script name \n";
     std::cin >> scriptname;
 
-    bool exists = std::ranges::any_of(scripts.begin(), scripts.end(), [&](const auto& script) {return script.getName() == scriptname;});
-
-    if(exists) {
+    if(scripts.find(scriptname) != scripts.end()) {
         std::cout << "There is a script with that name! \n";
         return;
     }
 
     std::cout << "Script created now you can analyse to add actions. \n";
-    analyseScript(scripts.emplace_back(scriptname));
+    scripts.insert({scriptname, ActionsScript(scriptname)});
+
+    analyseScript(scripts.find(scriptname)->second);
 }
 
 void playScript() {
@@ -281,7 +258,7 @@ void playScript() {
     std::cout << "Input the script name \n";
     std::cin >> scriptname;
 
-    auto scriptIt = std::ranges::find_if(scripts.begin(), scripts.end(), [&](const auto& script) {return script.getName() == scriptname;});
+    auto scriptIt = scripts.find(scriptname);
     if(scriptIt == scripts.end()) {
         std::cout << "Script not found \n";
         return;
@@ -290,8 +267,32 @@ void playScript() {
     std::cout << "Script found.. Starting in 3 seconds.. \n";
 
     Sleep(3000);
-    (*scriptIt).playAllActions(false);
+    scriptIt->second.playAllActions(false);
 
+}
+
+void recordScript() {
+    std::string input;
+    std::cout << "Input the script name \n";
+    std::cin >> input;
+
+    currScript = input;
+    scripts.insert({input, ActionsScript(input)});
+
+    std::jthread hookworker([&](HOOKPROC func) {
+        registerHookThread(hook, hookWinThreadID, func);
+    }, MouseProc);
+
+    hookworker.detach();
+
+    do {
+        std::cout << "To finish recording type finish. \n";
+        std::cin >> input;
+
+    } while(input != "finish");
+
+    PostThreadMessage(hookWinThreadID, WM_QUIT, 0, 0);
+    std::cout << "Recording has been finished.";
 }
 
 void analyseScript() {
@@ -300,10 +301,12 @@ void analyseScript() {
     std::cin >> scriptname;
     std::cin.ignore(1000, '\n');
 
-    auto scriptIt = std::ranges::find_if(scripts.begin(), scripts.end(), [&](const auto& script) {return script.getName() == scriptname;});
+    auto scriptIt = scripts.find(scriptname);
+
     if(scriptIt == scripts.end()) {
         std::cout << "Script not found \n";
         return;
     }
-    analyseScript(*scriptIt);
+
+    analyseScript(scriptIt->second);
 }

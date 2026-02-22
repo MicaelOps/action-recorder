@@ -70,6 +70,7 @@ ActionsScript registerExel() {
     // back to excel
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1429, 26}});
     excel.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{455, 258}});
+    excel.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 300});
     excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
     excel.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 

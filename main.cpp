@@ -2,14 +2,12 @@
 // Created by Micael Cossa on 27/01/2026.
 //
 
-#define WIN32_LEAN_AND_MEAN
 #include "script.h"
 #include "utils.h"
 #include "hardcoded.h"
 
 #include <iostream>
 #include <thread>
-#include <queue>
 #include <utility>
 #include <algorithm>
 #include <unordered_map>

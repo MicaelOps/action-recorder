@@ -607,7 +607,7 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
 
             std::vector<std::wstring> code_keywords = {
                     L"HD", L"SD", L"MW", L"CO", L"FIREDOOR", L"LAS", L"- ", L"-", L"cr", L"ELE", L"EIR", L"cr", L"eicr", L"bcn", L"ct", L"emer", L"trada", L"bmtrada", L"BM", L"FIRE", L"ct", L"Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
-                    L"Handover", L"Boiler", L"Form", L"IMS", L"CB", L"CB5", L"CB4", L"CB3", L"HWT", L"EIC", L"Asbestos", L"DA KIT", L"LAS HO", L"TEST", L"TEST ONLY"
+                    L"Handover", L"Boiler", L"Form", L"IMS", L"DFHN", L"CB", L"CB5", L"CB4", L"CB3", L"HWT", L"EIC", L"Asbestos", L"DA KIT", L"LAS HO", L"TEST", L"TEST ONLY"
             };
 
 

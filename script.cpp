@@ -104,6 +104,7 @@ void setClipboardText(const std::wstring& text) {
         std::cout << "Unable to open clipboard  \n";
         return;
     }
+
     size_t size = (text.size()+1)*sizeof(wchar_t);
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, size);
 
@@ -267,17 +268,22 @@ std::wstring getClipboardText() {
 
     if (!OpenClipboard(nullptr)) {
         std::cout << "Unable to access clipboard data \n";
-        return result;
+        return L"none";
     }
 
     HANDLE textData = GetClipboardData(CF_UNICODETEXT);
 
     if (textData) {
+
         auto *text = static_cast<wchar_t *>(GlobalLock(textData));
-        if (text) {
+
+        if (text)
             result = text;
-        }
+        else
+            result = L"none";
+
         GlobalUnlock(textData);
+
     }
     CloseClipboard();
     return result;
@@ -393,6 +399,10 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
         case ACTION_TYPE::SPECIAL_FUNCTION: {
 
             std::wstring text = getClipboardText();
+
+            if(text == L"none" || text.empty())
+                return true;
+
             auto pos = text.find(L"NLPG Ref.No:");
 
             if (pos == std::wstring::npos) {
@@ -407,7 +417,6 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
 
                 size_t start = pos;
                 while (pos < text.size() && iswdigit(text[pos])) ++pos;
-
 
                 auto number = text.substr(start, pos - start);
 
@@ -460,86 +469,39 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION4: {
-            // Open the clipboard
-            if (!OpenClipboard(nullptr)) {
-                std::cout << "UNABLE TO TO GET CLIPBOARD" << std::endl;
-                return true;
-            }
 
-            // Get the clipboard content (text format)
-            HANDLE hData = GetClipboardData(CF_TEXT);
-            if (hData == nullptr) {
-                std::cout << "Failed to get clipboard data!" << std::endl;
-                CloseClipboard();
-                return true;
-            }
-
-            // Lock the handle to get the text pointer
-            char *pszText = static_cast<char *>(GlobalLock(hData));
-            if (pszText == nullptr) {
-                std::cout << "Failed to lock clipboard data!" << std::endl;
-                CloseClipboard();
-                return true;
-            }
 
             // Convert to std::string
-            std::string clipboardText(pszText);
+            std::wstring clipboardText = getClipboardText();
 
-            GlobalUnlock(hData);
+            if(clipboardText == L"none" || clipboardText.empty())
+                return true;
+
 
             // Regex pattern to match the task and number
-            std::regex pattern(R"(SM-Task-(\d{5})\s+(\d+(\.\d{1,2})?))");
+            std::wregex pattern(LR"(SM-Task-(\d{5})\s+(\d+(\.\d{1,2})?))");
 
-            std::smatch matches;
+            std::wsmatch matches;
             if (std::regex_search(clipboardText, matches, pattern)) {
 
-                std::string task = "SM-Task-" + matches[1].str();  // Task ID
+                std::wstring task = L"SM-Task-" + matches[1].str();  // Task ID
                 pricedealing = std::stod(matches[2].str());  // Number
-                std::cout << "proccessing "<< task << " "  << pricedealing << std::endl;
-                EmptyClipboard();
+                std::wcout << L"proccessing "<< task << " "  << pricedealing << std::endl;
+                setClipboardText(task);
 
-                // Allocate memory for the task string and copy it to the clipboard
-                HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, task.size() + 1);
-                if (hGlobal) {
-                    char *pData = static_cast<char *>(GlobalLock(hGlobal));
-                    memcpy(pData, task.c_str(), task.size() + 1);
-                    GlobalUnlock(hGlobal);
-                    SetClipboardData(CF_TEXT, hGlobal);
-                }
             } else {
                 std::cerr << "No matching format found!" << std::endl;
                 return true;
             }
-            CloseClipboard();
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION5: {
-            if (!OpenClipboard(nullptr)) {
-                std::cout << "Failed t55o open clipboard!" << std::endl;
+
+            std::wstring clipboardText = getClipboardText();
+
+            if(clipboardText == L"none" || clipboardText.empty())
                 return true;
-            }
 
-            // Get the clipboard content (text format)
-            HANDLE hData = GetClipboardData(CF_UNICODETEXT);
-            if (hData == nullptr) {
-                std::cout << "Failed 55to get clipboard data!" << std::endl;
-                CloseClipboard();
-                return true;
-            }
-
-            // Lock the handle to get the text pointer
-            auto* pszText = static_cast<wchar_t*>(GlobalLock(hData));
-            if (pszText == nullptr) {
-                std::cout << "Failed to55 lock clipboard data!" << std::endl;
-                CloseClipboard();
-                return true;
-            }
-
-            // Convert to std::string
-            std::wstring clipboardText(pszText);
-            GlobalUnlock(hData);
-
-            EmptyClipboard();
 
             // Regex pattern to find the first £ followed by a number, with optional commas and decimals
             std::wregex pattern(LR"(\u00A3\s?(\d{1,3}(?:,\d{3})*(?:\.\d{1,2})?))");
@@ -561,41 +523,25 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                     } else {
                         std::cout << "price did not match " << amount << "\n";
                     }
-                    // Allocate memory for the text in the clipboard
-                    size_t size = (amountStr.size() + 1) * sizeof(wchar_t); // +1 for the null terminator
-                    HGLOBAL hGlob = GlobalAlloc(GMEM_FIXED, size);
-                    if (hGlob) {
-                        memcpy(hGlob, amountStr.c_str(), size);
+                    setClipboardText(amountStr);
 
-                        SetClipboardData(CF_UNICODETEXT, hGlob);
-                    }
-
-                    CloseClipboard();
                     break;
                 }
                 catch (const std::exception& e) {
-                    CloseClipboard();
                     std::cout << "Failed to convert amount: " << e.what() << std::endl;
                     return true;
                 }
             } else {
-                CloseClipboard();
                 std::cout << "No valid pound amount found!" << std::endl;
                 return true;
             }
-            CloseClipboard();
             break;
         }
         case ACTION_TYPE::SPECIAL_FUNCTION2: { // file name
             std::wstring input = getClipboardText();
 
-            // Retry if clipboard is empty (not ready yet)
-            int retries = 0;
-            while (input.empty() && retries < 3) {
-                Sleep(100);
-                input = getClipboardText();
-                retries++;
-            }
+            if(input == L"none" || input.empty())
+                return true;
 
             std::wstring output;
 

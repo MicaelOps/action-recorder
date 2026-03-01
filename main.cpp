@@ -62,8 +62,8 @@ int main() {
     SetProcessDPIAware();
 
     ActionsScript ee = registerHard(), aa = registerExel();
-    scripts.insert({"excelgenius", std::move(ee)});
-    scripts.insert({"final", std::move(aa)});
+    scripts.insert({"excelgenius", std::move(aa)});
+    scripts.insert({"final", std::move(ee)});
     do {
 
         std::cout << "To play a script type play, to start recording a script type record, to edit the record type analyse. \n";

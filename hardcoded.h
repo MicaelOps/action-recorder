@@ -303,7 +303,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{898, 15}});
 
     // 45. LEFT MOUSE CLICK Pos (1780, 737) idox document code
-    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1219, 602}});
+    hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1219, 597}});
 
     // 34. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});

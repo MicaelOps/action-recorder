@@ -160,7 +160,8 @@ ActionsScript registerHard() {
 
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
 
-    hardcoded.addAction({ACTION_TYPE::INSERT_VKKEY, 46});
+    WORD key = 46;
+    hardcoded.addAction({ACTION_TYPE::INSERT_VKKEY, key});
 
     hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
 

@@ -163,11 +163,16 @@ ActionsScript registerHard() {
     WORD key = 46;
     hardcoded.addAction({ACTION_TYPE::INSERT_VKKEY, key});
 
-    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 500});
 
     // 17. KEYBOARD CTRL + LETTER Text: v
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 100});
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
     hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 100});
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 100});
+    hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
 
     // 18. LEFT MOUSE CLICK Pos (1403, 182)
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1370, 186}});

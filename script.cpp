@@ -328,7 +328,7 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
         case ACTION_TYPE::LEFT_MOUSE_CLICK: {
             auto location = std::get<LOCATION>(data);
             SetCursorPos(location.X, location.Y);
-
+            Sleep(50); // timing issues
             inputs.resize(2);
 
             inputs[0].type = INPUT_MOUSE;
@@ -430,6 +430,7 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
                 std::wcout << L"Number detected " << number << "\n";
                 break;
             }
+            break;
         }
         case ACTION_TYPE::INSERT_VKKEY: {
             auto word_key = std::get<WORD>(data);

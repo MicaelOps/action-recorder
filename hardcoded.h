@@ -112,12 +112,12 @@ ActionsScript registerHard() {
     // 7. LEFT MOUSE CLICK Pos (1200, 594) NOTEPAD TAB
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{230, 34}});
 
-    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 150});
 
     // 8. SPECIAL_FUNCTION2
     hardcoded.addAction({ACTION_TYPE::SPECIAL_FUNCTION2, std::monostate()});
 
-    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 300});
 
     // 34. KEYBOARD CTRL + LETTER Text: c
     hardcoded.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
@@ -250,6 +250,7 @@ ActionsScript registerHard() {
     hardcoded.addAction({ACTION_TYPE::DRAG_MOUSE,
                          std::pair<LOCATION, LOCATION>{LOCATION{1562, 280}, LOCATION{606, 455}}});
 
+    hardcoded.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 200});
     // 1. LEFT MOUSE CLICK Pos (695, 265) file explorer icon
     hardcoded.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{956, 1054}});
 

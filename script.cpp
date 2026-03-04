@@ -420,6 +420,7 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
 
                 auto number = text.substr(start, pos - start);
 
+                std::wcout << "Analysing number...   ";
                 if(number.empty() || number[0] == ' ' || number[0] == '\t') {
                     std::wcout << L" Empty number detected \n";
                     return true;

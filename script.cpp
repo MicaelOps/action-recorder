@@ -33,7 +33,7 @@ LRESULT CALLBACK StopPlayingProc(int nCode, WPARAM wParam, LPARAM lParam) {
 void ActionsScript::addAction(WINDOWS_ACTION action) {
 
     auto node = std::make_unique<ScriptNode>(ScriptNode{std::move(action), nullptr});
-    ScriptNode* raw = node.get();
+    auto* raw = node.get();
 
     size++;
 
@@ -61,17 +61,27 @@ void ActionsScript::playAllActions(bool repeater) const {
     while(temp && !stop_playing) {
 
         // Should we stop running the script??! (for now, only special functions have this functionality)
-        bool crash_script = temp->val.playAction(repeater);
+        bool action_failed = temp->val.playAction(repeater);
 
-        if(crash_script) {
-            stop_playing = true; // indicates the REPEAT_SCRIPT that it should not run again!
-            break;
+        if(action_failed) {
+            
+            // Is there a protocol for the action if it failed?!
+            if(!temp->val.failed_action) {
+                stop_playing = true; // indicates the REPEAT_SCRIPT that it should not run again!
+                break;
+            }
+
+            PostThreadMessage(local_threadID, WM_QUIT, 0, 0);
+            Sleep(300); // give time for the thread exit to finish;
+
+            scripts.find(temp->val.failed_action.value())->second.playAllActions(false);
         }
 
         temp = temp->next.get();
         Sleep(300);
     }
 
+    PostThreadMessage(local_threadID, WM_QUIT, 0, 0);
     // Reset the stop_playing to false because REPEAT_SCRIPT action does it by itself
     if(!repeater)
         stop_playing = false;
@@ -559,7 +569,7 @@ bool WINDOWS_ACTION::playAction(bool repeaterCall) const noexcept{
             input = std::regex_replace(input, hyphen_code_pattern, L" $1");
 
             std::vector<std::wstring> code_keywords = {
-                    L"HD", L"SD", L"MW", L"CO", L"FIREDOOR", L"LAS", L"cr", L"ELE", L"EIR", L"cr", L"eicr", L"bcn", L"ct", L"emer", L"trada", L"bmtrada", L"BM", L"FIRE", L"ct", L"Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
+                    L"HD", L"SD", L"MW", L"CO", L"FIREDOOR", L"LAS", L"cr", L"-" , L"ELE", L"EIR", L"cr", L"eicr", L"bcn", L"ct", L"emer", L"trada", L"bmtrada", L"BM", L"FIRE", L"ct", L"Full", L"Full H", L"Htg", L"Hse", L"AMENDED", L"RADS", L"Rads", L"FAN", L"DEICR", L"SWI", L"KIT", L"KIT Survey", L"LAS", L"BATTERY", L"BAT", L"HO", L"KIT Asbes", L"Asbest", L"WAIVER", L"Waiver Mains", L"DA LAS", L"CP12", L"Gas Safe",
                     L"Handover", L"Boiler", L"Form", L"IMS", L"DFHN", L"CB", L"CB5", L"CB4", L"CB3", L"HWT", L"EIC", L"Asbestos", L"DA KIT", L"LAS HO", L"TEST", L"TEST ONLY"
             };
 

@@ -8,6 +8,7 @@
 #include <memory>
 #include <variant>
 #include <string>
+#include <optional>
 
 class ActionsScript;
 
@@ -35,8 +36,14 @@ struct LOCATION {
 };
 
 struct WINDOWS_ACTION {
+
     ACTION_TYPE action;
-    std::variant<std::monostate, std::string, LOCATION, unsigned short, int, std::pair<LOCATION, LOCATION>, std::pair<std::string, int>> data; // Location for mouse clicks, text for keyboard
+
+    // Location for mouse clicks, text for keyboard
+    std::variant<std::monostate, std::string, LOCATION, unsigned short, int, std::pair<LOCATION, LOCATION>, std::pair<std::string, int>> data;
+
+    // contains the name of the script to be executed if playAction() returns true before continuing the rest of the original script's actions.
+    std::optional<std::string> failed_action = std::nullopt;
 
     [[nodiscard]] std::string_view getActionName() const noexcept;
     [[nodiscard]] bool playAction(bool repeaterCall) const noexcept;

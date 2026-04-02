@@ -25,11 +25,9 @@ void registerHookThread(HHOOK& hook, DWORD& hookWinThreadID, HOOKPROC function) 
 
         if(msg.message == WM_QUIT)
             break;
-
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
-    hookWinThreadID = 0;
     UnhookWindowsHookEx(hook);
 }
 

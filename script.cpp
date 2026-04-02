@@ -47,7 +47,7 @@ void ActionsScript::addAction(WINDOWS_ACTION action) {
 }
 void ActionsScript::playAllActions(bool repeater) const {
     auto* temp = header.get();
-    DWORD local_threadID;
+    DWORD local_threadID =0;
 
 
     if (!repeater){
@@ -57,7 +57,6 @@ void ActionsScript::playAllActions(bool repeater) const {
 
         hookworker.detach();
     }
-
     while(temp && !stop_playing) {
 
         // Should we stop running the script??! (for now, only special functions have this functionality)
@@ -71,10 +70,10 @@ void ActionsScript::playAllActions(bool repeater) const {
                 break;
             }
 
-            PostThreadMessage(local_threadID, WM_QUIT, 0, 0);
+            //PostThreadMessage(local_threadID, WM_QUIT, 0, 0);
             Sleep(300); // give time for the thread exit to finish;
 
-            scripts.find(temp->val.failed_action.value())->second.playAllActions(false);
+            scripts.find(temp->val.failed_action.value())->second.playAllActions(true);
         }
 
         temp = temp->next.get();

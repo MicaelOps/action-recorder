@@ -9,8 +9,8 @@
 #include <iostream>
 #include <thread>
 #include <utility>
-#include <algorithm>
 #include <unordered_map>
+#include <map>
 
 void createMenu();
 
@@ -53,13 +53,13 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
     return CallNextHookEx(hook, nCode, wParam, lParam);
 }
 
-
-
 int main() {
 
     std::cout << "Welcome to the recorder. \n";
     std::string command;
     SetProcessDPIAware();
+    std::map<int, std::string> dot;
+
 
     ActionsScript ee = registerHard(), aa = registerExel();
     scripts.insert({"excelgenius", std::move(aa)});
@@ -81,7 +81,6 @@ int main() {
         } else if(command == "record") {
             recordScript();
         }
-
     } while(command != "stop");
 
     // Stop the Thread

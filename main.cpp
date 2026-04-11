@@ -64,6 +64,7 @@ int main() {
     ActionsScript ee = registerHard(), aa = registerExel();
     scripts.insert({"excelgenius", std::move(aa)});
     scripts.insert({"final", std::move(ee)});
+    scripts.insert({"sold", std::move(registerSold())});
     do {
 
         std::cout << "To play a script type play, to start recording a script type record, to edit the record type analyse. \n";

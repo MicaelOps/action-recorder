@@ -7,6 +7,51 @@
 
 #include "script.h"
 
+
+ActionsScript registerSold() {
+    ActionsScript sold("sold");
+
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1095, 40}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1903, 940}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{989, 147}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{989, 147}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{989, 147}});
+    sold.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+    sold.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 75});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{999, 1048}});
+    sold.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 50});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{769, 137}});
+    sold.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 50});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{301, 146}});
+    sold.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("a")});
+    sold.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 30});
+    sold.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{324, 185}});
+    sold.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 4400});
+
+
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 729}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 731}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 733}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 735}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 727}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 725}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 723}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 721}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{708, 737}});
+
+
+
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{166, 286}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{166, 286}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{166, 286}});
+    sold.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("c")});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{1422, 39}});
+    sold.addAction({ACTION_TYPE::LEFT_MOUSE_CLICK, LOCATION{989, 147}});
+    sold.addAction({ACTION_TYPE::WAIT_MILLISECONDS, 50});
+    sold.addAction({ACTION_TYPE::KEYBOARD_CONTROL_COMBO, std::string("v")});
+    return sold;
+}
 ActionsScript registerExel() {
     ActionsScript excel("excelgenius");
 
